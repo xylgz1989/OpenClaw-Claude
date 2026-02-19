@@ -9,8 +9,12 @@ import urllib.request
 import urllib.error
 from typing import Dict, Any, Optional
 from ..core.exceptions import (
-    ConnectionError, AuthenticationError, NetworkError,
-    ModelError, RateLimitError, ServerError
+    ConnectionError,
+    AuthenticationError,
+    NetworkError,
+    ModelError,
+    RateLimitError,
+    ServerError,
 )
 from ..utils.logger import get_logger
 
@@ -30,7 +34,7 @@ class ConnectionValidator:
         api_key: str,
         model: Optional[str] = None,
         provider: Optional[str] = None,
-        verify_ssl: bool = True
+        verify_ssl: bool = True,
     ) -> Dict[str, Any]:
         """测试LLM API连接（安全版本）
 
@@ -49,7 +53,7 @@ class ConnectionValidator:
             "message": "",
             "error_type": None,
             "details": None,
-            "latency_ms": 0
+            "latency_ms": 0,
         }
 
         # 重试机制
@@ -66,7 +70,9 @@ class ConnectionValidator:
                 ssl_context = self._create_ssl_context(verify_ssl)
 
                 # 发送请求
-                with urllib.request.urlopen(req, timeout=self.timeout, context=ssl_context) as response:
+                with urllib.request.urlopen(
+                    req, timeout=self.timeout, context=ssl_context
+                ) as response:
                     latency_ms = int((time.time() - start_time) * 1000)
                     result["latency_ms"] = latency_ms
 
@@ -78,8 +84,12 @@ class ConnectionValidator:
                         try:
                             resp_body = response.read().decode("utf-8")
                             resp_json = json.loads(resp_body)
-                            if "data" in resp_json and isinstance(resp_json["data"], list):
-                                result["message"] += f", 可用模型: {len(resp_json['data'])}个"
+                            if "data" in resp_json and isinstance(
+                                resp_json["data"], list
+                            ):
+                                result[
+                                    "message"
+                                ] += f", 可用模型: {len(resp_json['data'])}个"
                         except Exception as e:
                             self.logger.debug(f"解析响应失败: {e}")
 
@@ -139,16 +149,20 @@ class ConnectionValidator:
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
-            "User-Agent": "OpenClaw-Claude-Config/2.0"
+            "User-Agent": "OpenClaw-Claude-Config/2.0",
         }
 
         if "chat/completions" in url:
-            data = json.dumps({
-                "model": model or "gpt-3.5-turbo",
-                "messages": [{"role": "user", "content": "test"}],
-                "max_tokens": 1
-            }).encode("utf-8")
-            return urllib.request.Request(url, data=data, headers=headers, method="POST")
+            data = json.dumps(
+                {
+                    "model": model or "gpt-3.5-turbo",
+                    "messages": [{"role": "user", "content": "test"}],
+                    "max_tokens": 1,
+                }
+            ).encode("utf-8")
+            return urllib.request.Request(
+                url, data=data, headers=headers, method="POST"
+            )
         else:
             return urllib.request.Request(url, headers=headers, method="GET")
 
@@ -171,66 +185,69 @@ class ConnectionValidator:
             return {
                 "error_type": "auth",
                 "message": "认证失败: API Key无效或已过期",
-                "details": f"HTTP 401 - 请检查API Key是否正确"
+                "details": f"HTTP 401 - 请检查API Key是否正确",
             }
         elif error.code == 403:
             return {
                 "error_type": "auth",
                 "message": "权限不足: 无法访问该资源",
-                "details": f"HTTP 403 - 请检查账户权限或配额"
+                "details": f"HTTP 403 - 请检查账户权限或配额",
             }
         elif error.code == 404:
             return {
                 "error_type": "model",
                 "message": "模型不存在: 指定的模型ID无效",
-                "details": f"HTTP 404 - 请检查模型ID是否正确"
+                "details": f"HTTP 404 - 请检查模型ID是否正确",
             }
         elif error.code == 429:
             return {
                 "error_type": "rate_limit",
                 "message": "请求过于频繁: 已触发速率限制",
-                "details": f"HTTP 429 - 请稍后再试或升级套餐"
+                "details": f"HTTP 429 - 请稍后再试或升级套餐",
             }
         elif error.code >= 500:
             return {
                 "error_type": "server",
                 "message": f"服务器错误: {error.code}",
-                "details": f"HTTP {error.code} - 服务端出现问题，请稍后重试"
+                "details": f"HTTP {error.code} - 服务端出现问题，请稍后重试",
             }
         else:
             return {
                 "error_type": "unknown",
                 "message": f"HTTP错误: {error.code}",
-                "details": str(error)
+                "details": str(error),
             }
 
     def _handle_url_error(self, error: urllib.error.URLError) -> Dict[str, Any]:
         """处理URL错误"""
         error_str = str(error.reason) if hasattr(error, "reason") else str(error)
 
-        if "Name or service not known" in error_str or "getaddrinfo failed" in error_str:
+        if (
+            "Name or service not known" in error_str
+            or "getaddrinfo failed" in error_str
+        ):
             return {
                 "error_type": "network",
                 "message": "网络错误: 无法解析服务器地址",
-                "details": f"DNS解析失败 - 请检查Base URL是否正确"
+                "details": f"DNS解析失败 - 请检查Base URL是否正确",
             }
         elif "Connection refused" in error_str or "Connection timed out" in error_str:
             return {
                 "error_type": "network",
                 "message": "网络错误: 无法连接到服务器",
-                "details": f"连接失败 - 请检查网络连接或服务器状态"
+                "details": f"连接失败 - 请检查网络连接或服务器状态",
             }
         elif "SSL" in error_str or "certificate" in error_str:
             return {
                 "error_type": "network",
                 "message": "SSL证书错误",
-                "details": f"证书验证失败 - {error_str}"
+                "details": f"证书验证失败 - {error_str}",
             }
         else:
             return {
                 "error_type": "network",
                 "message": "网络错误",
-                "details": error_str
+                "details": error_str,
             }
 
     @staticmethod

@@ -25,7 +25,7 @@ def create_parser():
   %(prog)s claude-test                         # 测试Claude Code连接
   %(prog)s openclaw-config --model zhipu/glm-5 # 配置OpenClaw（交互输入API Key）
   %(prog)s models china                        # 列出国内模型
-        """
+        """,
     )
 
     # 设置日志
@@ -33,13 +33,9 @@ def create_parser():
         "--log-level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         default="INFO",
-        help="设置日志级别"
+        help="设置日志级别",
     )
-    parser.add_argument(
-        "--log-file",
-        type=Path,
-        help="日志文件路径"
-    )
+    parser.add_argument("--log-file", type=Path, help="日志文件路径")
 
     subparsers = parser.add_subparsers(dest="command", help="可用命令")
 
@@ -52,26 +48,36 @@ def create_parser():
     claude_parser.add_argument("--api-key", help="API Key（建议使用交互输入）")
     claude_parser.add_argument("--model", help="指定模型（覆盖预设）")
     claude_parser.add_argument("--no-test", action="store_true", help="跳过连接测试")
-    claude_parser.add_argument("--no-ssl-verify", action="store_true", help="禁用SSL验证（不推荐）")
+    claude_parser.add_argument(
+        "--no-ssl-verify", action="store_true", help="禁用SSL验证（不推荐）"
+    )
 
     # claude-test命令
     subparsers.add_parser("claude-test", help="测试Claude Code连接")
 
     # claude-custom命令
-    claude_custom_parser = subparsers.add_parser("claude-custom", help="添加自定义Claude预设")
+    claude_custom_parser = subparsers.add_parser(
+        "claude-custom", help="添加自定义Claude预设"
+    )
     claude_custom_parser.add_argument("--id", required=True, help="预设ID")
     claude_custom_parser.add_argument("--name", required=True, help="预设名称")
     claude_custom_parser.add_argument("--description", required=True, help="预设描述")
     claude_custom_parser.add_argument("--base-url", required=True, help="Base URL")
     claude_custom_parser.add_argument("--opus-model", required=True, help="Opus模型ID")
-    claude_custom_parser.add_argument("--sonnet-model", required=True, help="Sonnet模型ID")
-    claude_custom_parser.add_argument("--haiku-model", required=True, help="Haiku模型ID")
+    claude_custom_parser.add_argument(
+        "--sonnet-model", required=True, help="Sonnet模型ID"
+    )
+    claude_custom_parser.add_argument(
+        "--haiku-model", required=True, help="Haiku模型ID"
+    )
 
     # claude-list命令
     subparsers.add_parser("claude-list", help="列出Claude Code配置")
 
     # claude-ignore命令
-    claude_ignore_parser = subparsers.add_parser("claude-ignore", help="创建.claudeignore")
+    claude_ignore_parser = subparsers.add_parser(
+        "claude-ignore", help="创建.claudeignore"
+    )
     claude_ignore_parser.add_argument("--patterns", nargs="+", help="自定义忽略模式")
 
     # openclaw-config命令
@@ -80,20 +86,30 @@ def create_parser():
     openclaw_parser.add_argument("--api-key", help="API Key（建议使用交互输入）")
     openclaw_parser.add_argument("--base-url", help="Base URL")
     openclaw_parser.add_argument("--no-test", action="store_true", help="跳过连接测试")
-    openclaw_parser.add_argument("--no-ssl-verify", action="store_true", help="禁用SSL验证（不推荐）")
+    openclaw_parser.add_argument(
+        "--no-ssl-verify", action="store_true", help="禁用SSL验证（不推荐）"
+    )
 
     # openclaw-test命令
-    openclaw_test_parser = subparsers.add_parser("openclaw-test", help="测试OpenClaw模型连接")
+    openclaw_test_parser = subparsers.add_parser(
+        "openclaw-test", help="测试OpenClaw模型连接"
+    )
     openclaw_test_parser.add_argument("--provider", required=True, help="Provider名称")
 
     # openclaw-validate命令
     subparsers.add_parser("openclaw-validate", help="验证OpenClaw配置")
 
     # openclaw-custom命令
-    openclaw_custom_parser = subparsers.add_parser("openclaw-custom", help="添加自定义模型")
-    openclaw_custom_parser.add_argument("--id", required=True, help="模型ID (格式: provider/model)")
+    openclaw_custom_parser = subparsers.add_parser(
+        "openclaw-custom", help="添加自定义模型"
+    )
+    openclaw_custom_parser.add_argument(
+        "--id", required=True, help="模型ID (格式: provider/model)"
+    )
     openclaw_custom_parser.add_argument("--name", required=True, help="模型名称")
-    openclaw_custom_parser.add_argument("--provider", required=True, help="Provider名称")
+    openclaw_custom_parser.add_argument(
+        "--provider", required=True, help="Provider名称"
+    )
     openclaw_custom_parser.add_argument("--api-endpoint", required=True, help="API端点")
     openclaw_custom_parser.add_argument("--description", help="模型描述")
 
@@ -104,7 +120,7 @@ def create_parser():
         nargs="?",
         default="all",
         choices=["all", "china", "international"],
-        help="模型区域"
+        help="模型区域",
     )
 
     return parser
@@ -125,9 +141,7 @@ def main():
 
     # 设置日志
     logger = setup_logger(
-        "openclaw_claude_config",
-        level=args.log_level,
-        log_file=args.log_file
+        "openclaw_claude_config", level=args.log_level, log_file=args.log_file
     )
 
     if not args.command:
@@ -145,7 +159,9 @@ def main():
             connection_validator = ConnectionValidator()
 
             # 获取API Key
-            api_key = args.api_key or get_api_key_interactive(f"Claude Code ({args.preset})")
+            api_key = args.api_key or get_api_key_interactive(
+                f"Claude Code ({args.preset})"
+            )
 
             # 应用预设
             kwargs = {}
@@ -165,14 +181,25 @@ def main():
                 if base_url and api_key:
                     # 推断provider
                     provider = None
-                    for p in ["anthropic", "openai", "zhipu", "qwen", "deepseek", "kimi", "minimax"]:
+                    for p in [
+                        "anthropic",
+                        "openai",
+                        "zhipu",
+                        "qwen",
+                        "deepseek",
+                        "kimi",
+                        "minimax",
+                    ]:
                         if p in base_url.lower():
                             provider = p
                             break
 
                     result = connection_validator.test_connection(
-                        base_url, api_key, model, provider,
-                        verify_ssl=not args.no_ssl_verify
+                        base_url,
+                        api_key,
+                        model,
+                        provider,
+                        verify_ssl=not args.no_ssl_verify,
                     )
                     connection_validator.print_result(result)
 
@@ -191,7 +218,15 @@ def main():
 
             # 推断provider
             provider = None
-            for p in ["anthropic", "openai", "zhipu", "qwen", "deepseek", "kimi", "minimax"]:
+            for p in [
+                "anthropic",
+                "openai",
+                "zhipu",
+                "qwen",
+                "deepseek",
+                "kimi",
+                "minimax",
+            ]:
                 if p in base_url.lower():
                     provider = p
                     break
@@ -209,7 +244,7 @@ def main():
             models = {
                 "opus": args.opus_model,
                 "sonnet": args.sonnet_model,
-                "haiku": args.haiku_model
+                "haiku": args.haiku_model,
             }
             claude_config.add_custom_preset(
                 args.id, args.name, args.description, args.base_url, models
@@ -220,7 +255,12 @@ def main():
             claude_config.list_presets()
             print("\n当前配置:")
             import json
-            print(json.dumps(claude_config.get_current_config(), indent=2, ensure_ascii=False))
+
+            print(
+                json.dumps(
+                    claude_config.get_current_config(), indent=2, ensure_ascii=False
+                )
+            )
 
         elif args.command == "claude-ignore":
             claude_config = ClaudeCodeConfigManager()
@@ -231,20 +271,27 @@ def main():
             connection_validator = ConnectionValidator()
 
             # 获取API Key
-            api_key = args.api_key or get_api_key_interactive(f"OpenClaw ({args.model})")
+            api_key = args.api_key or get_api_key_interactive(
+                f"OpenClaw ({args.model})"
+            )
 
             # 测试连接
             if not args.no_test and args.base_url:
                 print("\n正在测试连接...")
                 provider = args.model.split("/")[0]
                 result = connection_validator.test_connection(
-                    args.base_url, api_key, args.model, provider,
-                    verify_ssl=not args.no_ssl_verify
+                    args.base_url,
+                    api_key,
+                    args.model,
+                    provider,
+                    verify_ssl=not args.no_ssl_verify,
                 )
                 connection_validator.print_result(result)
 
                 if not result["success"]:
-                    continue_input = input("\n连接失败，是否继续保存配置? [y/N]: ").strip().lower()
+                    continue_input = (
+                        input("\n连接失败，是否继续保存配置? [y/N]: ").strip().lower()
+                    )
                     if continue_input != "y":
                         return 1
 
@@ -289,8 +336,11 @@ def main():
         elif args.command == "openclaw-custom":
             openclaw_config = OpenClawConfigManager()
             openclaw_config.add_custom_model(
-                args.id, args.name, args.provider, args.api_endpoint,
-                args.description or ""
+                args.id,
+                args.name,
+                args.provider,
+                args.api_endpoint,
+                args.description or "",
             )
 
         elif args.command == "models":
@@ -309,7 +359,9 @@ def main():
                         print(f"    {model.id} - {model.name}")
                         print(f"      上下文: {model.context_length//1000}K tokens")
                         if model.api_pricing:
-                            print(f"      API价格: 输入 {model.api_pricing.get('input_per_1m', 'N/A')}元/百万tokens")
+                            print(
+                                f"      API价格: 输入 {model.api_pricing.get('input_per_1m', 'N/A')}元/百万tokens"
+                            )
 
         return 0
 

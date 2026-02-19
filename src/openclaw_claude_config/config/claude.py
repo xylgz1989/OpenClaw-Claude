@@ -23,21 +23,13 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "name": "智谱 GLM",
             "description": "国产GLM模型，编程能力强",
             "base_url": "https://open.bigmodel.cn/api/anthropic",
-            "models": {
-                "opus": "glm-5",
-                "sonnet": "glm-4.7",
-                "haiku": "glm-4.5-air"
-            }
+            "models": {"opus": "glm-5", "sonnet": "glm-4.7", "haiku": "glm-4.5-air"},
         },
         "zai": {
             "name": "Z.AI Coding",
             "description": "智谱Coding Plan专用端点",
             "base_url": "https://api.z.ai/api/coding/paas/v4",
-            "models": {
-                "opus": "glm-5",
-                "sonnet": "glm-4.7",
-                "haiku": "glm-4.5-air"
-            }
+            "models": {"opus": "glm-5", "sonnet": "glm-4.7", "haiku": "glm-4.5-air"},
         },
         "aliyun": {
             "name": "阿里云百炼",
@@ -46,8 +38,8 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "qwen3.5-plus",
                 "sonnet": "qwen3.5-plus",
-                "haiku": "qwen3.5-turbo"
-            }
+                "haiku": "qwen3.5-turbo",
+            },
         },
         "deepseek": {
             "name": "DeepSeek",
@@ -56,8 +48,8 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "deepseek-v4",
                 "sonnet": "deepseek-chat",
-                "haiku": "deepseek-chat"
-            }
+                "haiku": "deepseek-chat",
+            },
         },
         "kimi": {
             "name": "Kimi (Moonshot)",
@@ -66,18 +58,14 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "kimi-k2.5",
                 "sonnet": "kimi-k2.5",
-                "haiku": "kimi-k2.5"
-            }
+                "haiku": "kimi-k2.5",
+            },
         },
         "minimax": {
             "name": "MiniMax",
             "description": "MiniMax M2.5",
             "base_url": "https://api.minimaxi.com/anthropic",
-            "models": {
-                "opus": "m2.5",
-                "sonnet": "m2.5",
-                "haiku": "m2.5"
-            }
+            "models": {"opus": "m2.5", "sonnet": "m2.5", "haiku": "m2.5"},
         },
         "anthropic": {
             "name": "Anthropic官方",
@@ -86,8 +74,8 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "claude-opus-4-5",
                 "sonnet": "claude-sonnet-4-20250514",
-                "haiku": "claude-haiku-4-20250514"
-            }
+                "haiku": "claude-haiku-4-20250514",
+            },
         },
         "siliconflow": {
             "name": "硅基流动",
@@ -96,8 +84,8 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "Qwen/Qwen3.5-397B-A17B",
                 "sonnet": "Qwen/Qwen3.5-Plus",
-                "haiku": "Qwen/Qwen3.5-Turbo"
-            }
+                "haiku": "Qwen/Qwen3.5-Turbo",
+            },
         },
         "openrouter": {
             "name": "OpenRouter",
@@ -106,8 +94,8 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "anthropic/claude-opus-4-5",
                 "sonnet": "anthropic/claude-sonnet-4",
-                "haiku": "anthropic/claude-haiku-4"
-            }
+                "haiku": "anthropic/claude-haiku-4",
+            },
         },
     }
 
@@ -170,14 +158,9 @@ fixtures/
         """创建默认配置"""
         return {
             "env": {},
-            "permissions": {
-                "allowed": ["all"],
-                "denied": []
-            },
+            "permissions": {"allowed": ["all"], "denied": []},
             "hooks": {},
-            "_schema": {
-                "version": "2.0"
-            }
+            "_schema": {"version": "2.0"},
         }
 
     def validate_config(self) -> tuple[bool, List[str]]:
@@ -229,11 +212,7 @@ fixtures/
             return False
 
     def apply_preset(
-        self,
-        preset_id: str,
-        api_key: str,
-        model: Optional[str] = None,
-        **kwargs
+        self, preset_id: str, api_key: str, model: Optional[str] = None, **kwargs
     ) -> bool:
         """应用预设配置"""
         # 合并内置预设和自定义预设
@@ -259,10 +238,18 @@ fixtures/
             env_config["ANTHROPIC_MODEL"] = preset["models"]["sonnet"]
 
         # 添加分层模型配置
-        env_config["ANTHROPIC_DEFAULT_OPUS_MODEL"] = preset["models"].get("opus", preset["models"]["sonnet"])
-        env_config["ANTHROPIC_DEFAULT_SONNET_MODEL"] = preset["models"].get("sonnet", preset["models"]["sonnet"])
-        env_config["ANTHROPIC_DEFAULT_HAIKU_MODEL"] = preset["models"].get("haiku", preset["models"]["sonnet"])
-        env_config["ANTHROPIC_SMALL_FAST_MODEL"] = preset["models"].get("haiku", preset["models"]["sonnet"])
+        env_config["ANTHROPIC_DEFAULT_OPUS_MODEL"] = preset["models"].get(
+            "opus", preset["models"]["sonnet"]
+        )
+        env_config["ANTHROPIC_DEFAULT_SONNET_MODEL"] = preset["models"].get(
+            "sonnet", preset["models"]["sonnet"]
+        )
+        env_config["ANTHROPIC_DEFAULT_HAIKU_MODEL"] = preset["models"].get(
+            "haiku", preset["models"]["sonnet"]
+        )
+        env_config["ANTHROPIC_SMALL_FAST_MODEL"] = preset["models"].get(
+            "haiku", preset["models"]["sonnet"]
+        )
 
         # 更新配置
         self.update({"env": env_config})
@@ -287,7 +274,7 @@ fixtures/
         name: str,
         description: str,
         base_url: str,
-        models: Dict[str, str]
+        models: Dict[str, str],
     ) -> bool:
         """添加自定义预设"""
         if preset_id in self.BUILTIN_PRESETS:
@@ -297,7 +284,7 @@ fixtures/
             "name": name,
             "description": description,
             "base_url": base_url,
-            "models": models
+            "models": models,
         }
 
         return self.save_custom_presets()
@@ -332,7 +319,9 @@ fixtures/
             print(f"\n  [{preset_id}] {preset['name']}")
             print(f"      描述: {preset['description']}")
             print(f"      Base URL: {preset['base_url']}")
-            print(f"      模型: Opus={preset['models']['opus']}, Sonnet={preset['models']['sonnet']}")
+            print(
+                f"      模型: Opus={preset['models']['opus']}, Sonnet={preset['models']['sonnet']}"
+            )
 
         if self.custom_presets:
             print("\n自定义预设配置:")

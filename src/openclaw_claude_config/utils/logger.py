@@ -12,7 +12,7 @@ def setup_logger(
     name: str,
     level: str = "INFO",
     log_file: Optional[Path] = None,
-    format_string: Optional[str] = None
+    format_string: Optional[str] = None,
 ) -> logging.Logger:
     """设置日志记录器
 

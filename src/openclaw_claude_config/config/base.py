@@ -96,6 +96,7 @@ class BaseConfigManager(ABC):
         backup_path = backup_dir / backup_name
 
         import shutil
+
         shutil.copy2(self.config_path, backup_path)
         self.logger.info(f"已创建备份: {backup_path}")
 

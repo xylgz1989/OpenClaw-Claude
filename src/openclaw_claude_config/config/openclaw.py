@@ -35,42 +35,29 @@ class OpenClawConfigManager(BaseConfigManager):
     def create_default_config(self) -> Dict[str, Any]:
         """创建默认配置"""
         return {
-            "agent": {
-                "model": "anthropic/claude-sonnet-4-20250514"
-            },
+            "agent": {"model": "anthropic/claude-sonnet-4-20250514"},
             "gateway": {
                 "port": 18789,
                 "mode": "local",
                 "bind": "loopback",
-                "auth": {
-                    "mode": "token",
-                    "token": "${GATEWAY_TOKEN}"
-                }
+                "auth": {"mode": "token", "token": "${GATEWAY_TOKEN}"},
             },
-            "models": {
-                "anthropic": {
-                    "apiKey": "${ANTHROPIC_API_KEY}"
-                }
-            },
+            "models": {"anthropic": {"apiKey": "${ANTHROPIC_API_KEY}"}},
             "agents": {
                 "defaults": {
                     "model": {
                         "primary": "anthropic/claude-sonnet-4-20250514",
-                        "fallbacks": ["anthropic/claude-haiku-4-20250514"]
+                        "fallbacks": ["anthropic/claude-haiku-4-20250514"],
                     },
                     "workspace": "~/.openclaw/workspace",
-                    "sandbox": {
-                        "mode": "non-main"
-                    }
+                    "sandbox": {"mode": "non-main"},
                 },
-                "list": []
+                "list": [],
             },
             "channels": {},
             "tools": {},
             "messages": {},
-            "_schema": {
-                "version": "2.1"
-            }
+            "_schema": {"version": "2.1"},
         }
 
     def validate_config(self) -> Tuple[bool, List[str]]:
@@ -82,7 +69,7 @@ class OpenClawConfigManager(BaseConfigManager):
         required_fields = [
             "agent.model",
             "gateway.port",
-            "agents.defaults.model.primary"
+            "agents.defaults.model.primary",
         ]
 
         for field in required_fields:
@@ -104,7 +91,9 @@ class OpenClawConfigManager(BaseConfigManager):
         if primary_model:
             provider = primary_model.split("/")[0]
             if provider not in self.get("models", {}):
-                warnings.append(f"主模型 '{primary_model}' 的provider '{provider}' 未配置API密钥")
+                warnings.append(
+                    f"主模型 '{primary_model}' 的provider '{provider}' 未配置API密钥"
+                )
 
         return len(errors) == 0, errors + warnings
 
@@ -144,7 +133,7 @@ class OpenClawConfigManager(BaseConfigManager):
         model_id: str,
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
-        test_connection: bool = True
+        test_connection: bool = True,
     ) -> bool:
         """设置模型（支持分层策略）"""
         # 解析模型ID
@@ -195,14 +184,14 @@ class OpenClawConfigManager(BaseConfigManager):
         name: str,
         provider: str,
         api_endpoint: str,
-        description: str = ""
+        description: str = "",
     ) -> bool:
         """添加自定义模型"""
         self.custom_models[model_id] = {
             "name": name,
             "provider": provider,
             "api_endpoint": api_endpoint,
-            "description": description
+            "description": description,
         }
 
         return self.save_custom_models()
@@ -242,5 +231,5 @@ class OpenClawConfigManager(BaseConfigManager):
             print(f"    名称: {model['name']}")
             print(f"    Provider: {model['provider']}")
             print(f"    API端点: {model['api_endpoint']}")
-            if model['description']:
+            if model["description"]:
                 print(f"    描述: {model['description']}")

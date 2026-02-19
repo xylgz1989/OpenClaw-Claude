@@ -71,12 +71,16 @@ class WizardCommand(BaseCommand):
         self.connection_validator.print_result(result)
 
         if not result["success"]:
-            retry = self._get_user_input("连接失败，是否重试? [y/N]", default="n").lower()
+            retry = self._get_user_input(
+                "连接失败，是否重试? [y/N]", default="n"
+            ).lower()
             if retry == "y":
                 return self._configure_claude_code()
 
         # 创建.claudeignore
-        create_ignore = self._get_user_input("\n是否创建.claudeignore文件? [Y/n]", default="y").lower()
+        create_ignore = self._get_user_input(
+            "\n是否创建.claudeignore文件? [Y/n]", default="y"
+        ).lower()
         if create_ignore in ["", "y"]:
             custom_patterns = self._get_custom_ignore_patterns()
             self.claude_config.create_claudeignore(custom_patterns)
@@ -111,12 +115,16 @@ class WizardCommand(BaseCommand):
                 self.connection_validator.print_result(result)
 
                 if not result["success"]:
-                    retry = self._get_user_input("连接失败，是否继续保存配置? [y/N]", default="n").lower()
+                    retry = self._get_user_input(
+                        "连接失败，是否继续保存配置? [y/N]", default="n"
+                    ).lower()
                     if retry != "y":
                         return False
 
             # 设置模型配置
-            self.openclaw_config.set_model(model, api_key, base_url, test_connection=False)
+            self.openclaw_config.set_model(
+                model, api_key, base_url, test_connection=False
+            )
 
             # 验证配置
             is_valid, messages = self.openclaw_config.validate_config()
@@ -171,12 +179,20 @@ class WizardCommand(BaseCommand):
             return {
                 "success": False,
                 "message": "配置不完整，缺少Base URL或API Key",
-                "error_type": "config"
+                "error_type": "config",
             }
 
         # 推断provider
         provider = None
-        for p in ["anthropic", "openai", "zhipu", "qwen", "deepseek", "kimi", "minimax"]:
+        for p in [
+            "anthropic",
+            "openai",
+            "zhipu",
+            "qwen",
+            "deepseek",
+            "kimi",
+            "minimax",
+        ]:
             if p in base_url.lower():
                 provider = p
                 break
@@ -185,7 +201,9 @@ class WizardCommand(BaseCommand):
             base_url, api_key, model, provider, verify_ssl=True
         )
 
-    def _get_user_input(self, prompt: str, required: bool = False, default: str = None) -> str:
+    def _get_user_input(
+        self, prompt: str, required: bool = False, default: str = None
+    ) -> str:
         """获取用户输入"""
         while True:
             if default:

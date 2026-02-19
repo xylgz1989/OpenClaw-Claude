@@ -41,7 +41,11 @@ def get_api_key_interactive(service_name: str) -> str:
     try:
         stored_key = keyring.get_password(f"openclaw-{service_name}", "api_key")
         if stored_key:
-            use_stored = input(f"是否使用已保存的{service_name} API Key? [Y/n]: ").strip().lower()
+            use_stored = (
+                input(f"是否使用已保存的{service_name} API Key? [Y/n]: ")
+                .strip()
+                .lower()
+            )
             if use_stored in ["", "y"]:
                 return stored_key
     except Exception:
