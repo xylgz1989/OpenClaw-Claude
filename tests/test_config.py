@@ -19,7 +19,11 @@ class TestClaudeCodeConfigManager:
         """测试创建默认配置"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_settings.json"
-            with patch.object(ClaudeCodeConfigManager, 'CUSTOM_PRESETS_PATH', Path(tmpdir) / "custom_presets.json"):
+            with patch.object(
+                ClaudeCodeConfigManager,
+                "CUSTOM_PRESETS_PATH",
+                Path(tmpdir) / "custom_presets.json",
+            ):
                 manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -36,7 +40,11 @@ class TestClaudeCodeConfigManager:
         """测试应用预设"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_settings.json"
-            with patch.object(ClaudeCodeConfigManager, 'CUSTOM_PRESETS_PATH', Path(tmpdir) / "custom_presets.json"):
+            with patch.object(
+                ClaudeCodeConfigManager,
+                "CUSTOM_PRESETS_PATH",
+                Path(tmpdir) / "custom_presets.json",
+            ):
                 manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -45,20 +53,25 @@ class TestClaudeCodeConfigManager:
 
                 # 测试应用内置预设
                 result = manager.apply_preset(
-                    "zhipu",
-                    "test_api_key",
-                    model="test-model"
+                    "zhipu", "test_api_key", model="test-model"
                 )
                 assert result is True
                 assert manager.get("env.ANTHROPIC_API_KEY") == "test_api_key"
-                assert manager.get("env.ANTHROPIC_BASE_URL") == "https://open.bigmodel.cn/api/anthropic"
+                assert (
+                    manager.get("env.ANTHROPIC_BASE_URL")
+                    == "https://open.bigmodel.cn/api/anthropic"
+                )
                 assert manager.get("env.ANTHROPIC_MODEL") == "test-model"
 
     def test_apply_invalid_preset(self):
         """测试应用无效预设"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_settings.json"
-            with patch.object(ClaudeCodeConfigManager, 'CUSTOM_PRESETS_PATH', Path(tmpdir) / "custom_presets.json"):
+            with patch.object(
+                ClaudeCodeConfigManager,
+                "CUSTOM_PRESETS_PATH",
+                Path(tmpdir) / "custom_presets.json",
+            ):
                 manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -73,8 +86,13 @@ class TestClaudeCodeConfigManager:
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_settings.json"
             custom_presets_path = Path(tmpdir) / "custom_presets.json"
-            with patch.object(ClaudeCodeConfigManager, 'CUSTOM_PRESETS_PATH', custom_presets_path):
-                with patch('openclaw_claude_config.config.claude.set_secure_permissions', return_value=True):
+            with patch.object(
+                ClaudeCodeConfigManager, "CUSTOM_PRESETS_PATH", custom_presets_path
+            ):
+                with patch(
+                    "openclaw_claude_config.config.claude.set_secure_permissions",
+                    return_value=True,
+                ):
                     manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
                     manager.config_path = config_path
                     manager.logger = MagicMock()
@@ -84,7 +102,7 @@ class TestClaudeCodeConfigManager:
                     models = {
                         "opus": "test-opus",
                         "sonnet": "test-sonnet",
-                        "haiku": "test-haiku"
+                        "haiku": "test-haiku",
                     }
 
                     result = manager.add_custom_preset(
@@ -92,7 +110,7 @@ class TestClaudeCodeConfigManager:
                         "Test Provider",
                         "Test description",
                         "https://api.test.com",
-                        models
+                        models,
                     )
                     assert result is True
                     assert "test_provider" in manager.custom_presets
@@ -101,7 +119,11 @@ class TestClaudeCodeConfigManager:
         """测试配置验证"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_settings.json"
-            with patch.object(ClaudeCodeConfigManager, 'CUSTOM_PRESETS_PATH', Path(tmpdir) / "custom_presets.json"):
+            with patch.object(
+                ClaudeCodeConfigManager,
+                "CUSTOM_PRESETS_PATH",
+                Path(tmpdir) / "custom_presets.json",
+            ):
                 manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -130,7 +152,11 @@ class TestOpenClawConfigManager:
         """测试创建默认配置"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_openclaw.json"
-            with patch.object(OpenClawConfigManager, 'CUSTOM_MODELS_PATH', Path(tmpdir) / "custom_models.json"):
+            with patch.object(
+                OpenClawConfigManager,
+                "CUSTOM_MODELS_PATH",
+                Path(tmpdir) / "custom_models.json",
+            ):
                 manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -148,7 +174,11 @@ class TestOpenClawConfigManager:
         """测试设置模型"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_openclaw.json"
-            with patch.object(OpenClawConfigManager, 'CUSTOM_MODELS_PATH', Path(tmpdir) / "custom_models.json"):
+            with patch.object(
+                OpenClawConfigManager,
+                "CUSTOM_MODELS_PATH",
+                Path(tmpdir) / "custom_models.json",
+            ):
                 manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -156,20 +186,25 @@ class TestOpenClawConfigManager:
                 manager.custom_models = {}
 
                 result = manager.set_model(
-                    "test_provider/test_model",
-                    "test_api_key",
-                    "https://api.test.com"
+                    "test_provider/test_model", "test_api_key", "https://api.test.com"
                 )
                 assert result is True
                 assert manager.get("agent.model") == "test_provider/test_model"
                 assert manager.get("models.test_provider.apiKey") == "test_api_key"
-                assert manager.get("models.test_provider.baseUrl") == "https://api.test.com"
+                assert (
+                    manager.get("models.test_provider.baseUrl")
+                    == "https://api.test.com"
+                )
 
     def test_set_invalid_model_id(self):
         """测试设置无效模型ID"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_openclaw.json"
-            with patch.object(OpenClawConfigManager, 'CUSTOM_MODELS_PATH', Path(tmpdir) / "custom_models.json"):
+            with patch.object(
+                OpenClawConfigManager,
+                "CUSTOM_MODELS_PATH",
+                Path(tmpdir) / "custom_models.json",
+            ):
                 manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -183,7 +218,11 @@ class TestOpenClawConfigManager:
         """测试配置验证"""
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_openclaw.json"
-            with patch.object(OpenClawConfigManager, 'CUSTOM_MODELS_PATH', Path(tmpdir) / "custom_models.json"):
+            with patch.object(
+                OpenClawConfigManager,
+                "CUSTOM_MODELS_PATH",
+                Path(tmpdir) / "custom_models.json",
+            ):
                 manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
@@ -205,8 +244,13 @@ class TestOpenClawConfigManager:
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "test_openclaw.json"
             custom_models_path = Path(tmpdir) / "custom_models.json"
-            with patch.object(OpenClawConfigManager, 'CUSTOM_MODELS_PATH', custom_models_path):
-                with patch('openclaw_claude_config.config.openclaw.set_secure_permissions', return_value=True):
+            with patch.object(
+                OpenClawConfigManager, "CUSTOM_MODELS_PATH", custom_models_path
+            ):
+                with patch(
+                    "openclaw_claude_config.config.openclaw.set_secure_permissions",
+                    return_value=True,
+                ):
                     manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                     manager.config_path = config_path
                     manager.logger = MagicMock()
@@ -218,7 +262,7 @@ class TestOpenClawConfigManager:
                         "Test Model",
                         "test_provider",
                         "https://api.test.com",
-                        "Test description"
+                        "Test description",
                     )
                     assert result is True
                     assert "test_provider/test_model" in manager.custom_models
