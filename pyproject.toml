@@ -28,11 +28,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 keywords = ["claude", "openclaw", "configuration", "llm", "ai"]
-urls = {
-    Homepage = "https://github.com/openclaw/openclaw-claude-config",
-    Repository = "https://github.com/openclaw/openclaw-claude-config",
-    "Bug Tracker" = "https://github.com/openclaw/openclaw-claude-config/issues",
-}
+[project.urls]
+Homepage = "https://github.com/openclaw/openclaw-claude-config"
+Repository = "https://github.com/openclaw/openclaw-claude-config"
+"Bug Tracker" = "https://github.com/openclaw/openclaw-claude-config/issues"
 
 [project.scripts]
 openclaw-claude-config = "openclaw_claude_config:main"
