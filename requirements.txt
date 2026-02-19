@@ -1,0 +1,7 @@
+# OpenClaw + Claude Code 配置工具依赖
+
+# 安全相关
+keyring>=23.0.0
+
+# 类型检查
+typing-extensions>=4.0.0

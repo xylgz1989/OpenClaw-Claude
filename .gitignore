@@ -1,0 +1,44 @@
+# Configuration files that contain sensitive information
+~/.openclaw/config.env
+
+# Log files
+*.log
+/var/log/*
+/tmp/*.log
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+/backup/
+
+# Environment specific
+.env
+.config
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*~
+*.bak
+*.swp
+
+# Secrets
+secrets/
+credentials/
+config/keys/
+*.key
+*.pem
+*.cert
+*.crt
+
+# Local configuration overrides
+.local
+*.local.json

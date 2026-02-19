@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openclaw-claude-config"
+dynamic = ["version", "readme", "dependencies"]
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "OpenClaw Claude Config Team", email = "contact@example.com"}
+]
+maintainers = [
+    {name = "OpenClaw Claude Config Team", email = "contact@example.com"}
+]
+description = "A unified configuration tool for Claude Code and OpenClaw"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["claude", "openclaw", "configuration", "llm", "ai"]
+urls = {
+    Homepage = "https://github.com/openclaw/openclaw-claude-config",
+    Repository = "https://github.com/openclaw/openclaw-claude-config",
+    "Bug Tracker" = "https://github.com/openclaw/openclaw-claude-config/issues",
+}
+
+[project.scripts]
+openclaw-claude-config = "openclaw_claude_config:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+    "tox>=4.0",
+]

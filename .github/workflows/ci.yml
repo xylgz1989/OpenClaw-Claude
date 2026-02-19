@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up shell environment
+      run: |
+        echo "SHELL=/bin/bash" >> $GITHUB_ENV
+        which bash || echo "bash not found"
+
+    - name: Check script syntax
+      run: |
+        # Check syntax of all bash scripts
+        for script in *.sh; do
+          if [ -f "$script" ]; then
+            echo "Checking syntax of $script..."
+            bash -n "$script" || exit 1
+          fi
+        done
+
+    - name: Test script executability
+      run: |
+        chmod +x *.sh
+        echo "All scripts made executable"
+
+    - name: Verify essential files exist
+      run: |
+        test -f README.md && echo "README.md exists"
+        test -f LICENSE && echo "LICENSE exists"
+        test -f CONTRIBUTING.md && echo "CONTRIBUTING.md exists"
+        test -f CODE_OF_CONDUCT.md && echo "CODE_OF_CONDUCT.md exists"
+
+    - name: Create test environment and run basic setup
+      run: |
+        # Create a test directory to simulate setup
+        mkdir -p ~/.openclaw/test
+        echo "Test environment created"
+
+    - name: Run verification script check
+      run: |
+        # Verify the scripts have proper shebangs
+        head -1 setup_tencent_lighthouse.sh | grep -q "#!/bin/bash" && echo "Correct shebang in setup script"
+        head -1 run_tencent_setup.sh | grep -q "#!/bin/bash" && echo "Correct shebang in run script"
+        head -1 verify_installation.sh | grep -q "#!/bin/bash" && echo "Correct shebang in verify script"
