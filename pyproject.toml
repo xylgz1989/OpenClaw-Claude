@@ -28,6 +28,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 keywords = ["claude", "openclaw", "configuration", "llm", "ai"]
+
 [project.urls]
 Homepage = "https://github.com/openclaw/openclaw-claude-config"
 Repository = "https://github.com/openclaw/openclaw-claude-config"
