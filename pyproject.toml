@@ -1,10 +1,12 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "openclaw-claude-config"
-dynamic = ["version", "readme", "dependencies"]
+version = "2.0.0"
+description = "A unified configuration tool for Claude Code and OpenClaw"
+readme = "README_v2.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
@@ -13,8 +15,6 @@ authors = [
 maintainers = [
     {name = "OpenClaw Claude Config Team", email = "contact@example.com"}
 ]
-description = "A unified configuration tool for Claude Code and OpenClaw"
-readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -28,6 +28,12 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 keywords = ["claude", "openclaw", "configuration", "llm", "ai"]
+dependencies = [
+    "requests>=2.25.0",
+    "click>=8.0.0",
+    "pyyaml>=6.0",
+    "colorama>=0.4.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/openclaw/openclaw-claude-config"
@@ -35,7 +41,7 @@ Repository = "https://github.com/openclaw/openclaw-claude-config"
 "Bug Tracker" = "https://github.com/openclaw/openclaw-claude-config/issues"
 
 [project.scripts]
-openclaw-claude-config = "openclaw_claude_config:main"
+openclaw-claude-config = "openclaw_claude_config.cli.main:main"
 
 [project.optional-dependencies]
 dev = [
