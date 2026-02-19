@@ -33,12 +33,6 @@ print_error() {
 pause_for_verification() {
     echo "[AUTO] Skipping verification pause: $1"
 }
-    echo ""
-    echo -e "${YELLOW}🔍 人工确认点：${NC}"
-    echo "$1"
-    read -p "按ENTER继续（Ctrl+C取消）..." -r
-    echo ""
-}
 
 # 确认是否继续
 confirm_action() {
@@ -103,7 +97,7 @@ check_prerequisites() {
     PREREQS_MET=1
 
     # 检查curl
-    curl --version &> /dev/null || print_warning "curl not available, continuing anyway."
+    if ! curl --version &> /dev/null; then
         print_error "curl 未安装，正在安装..."
         if command -v yum &> /dev/null; then
             sudo yum install -y curl
