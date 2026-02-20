@@ -42,7 +42,9 @@ def create_parser():
     subparsers.add_parser("wizard", help="交互式配置向导")
 
     # claude-config命令
-    claude_parser = subparsers.add_parser("claude-config", help="配置Claude Code")
+    claude_parser = subparsers.add_parser(
+        "claude-config", help="配置Claude Code"
+    )
     claude_parser.add_argument("--preset", required=True, help="预设名称")
     claude_parser.add_argument("--api-key", help="API Key（建议使用交互输入）")
     claude_parser.add_argument("--model", help="指定模型（覆盖预设）")
@@ -60,9 +62,15 @@ def create_parser():
     )
     claude_custom_parser.add_argument("--id", required=True, help="预设ID")
     claude_custom_parser.add_argument("--name", required=True, help="预设名称")
-    claude_custom_parser.add_argument("--description", required=True, help="预设描述")
-    claude_custom_parser.add_argument("--base-url", required=True, help="Base URL")
-    claude_custom_parser.add_argument("--opus-model", required=True, help="Opus模型ID")
+    claude_custom_parser.add_argument(
+        "--description", required=True, help="预设描述"
+    )
+    claude_custom_parser.add_argument(
+        "--base-url", required=True, help="Base URL"
+    )
+    claude_custom_parser.add_argument(
+        "--opus-model", required=True, help="Opus模型ID"
+    )
     claude_custom_parser.add_argument(
         "--sonnet-model", required=True, help="Sonnet模型ID"
     )
@@ -80,11 +88,15 @@ def create_parser():
     claude_ignore_parser.add_argument("--patterns", nargs="+", help="自定义忽略模式")
 
     # openclaw-config命令
-    openclaw_parser = subparsers.add_parser("openclaw-config", help="配置OpenClaw")
+    openclaw_parser = subparsers.add_parser(
+        "openclaw-config", help="配置OpenClaw"
+    )
     openclaw_parser.add_argument("--model", required=True, help="模型ID")
     openclaw_parser.add_argument("--api-key", help="API Key（建议使用交互输入）")
     openclaw_parser.add_argument("--base-url", help="Base URL")
-    openclaw_parser.add_argument("--no-test", action="store_true", help="跳过连接测试")
+    openclaw_parser.add_argument(
+        "--no-test", action="store_true", help="跳过连接测试"
+    )
     openclaw_parser.add_argument(
         "--no-ssl-verify", action="store_true", help="禁用SSL验证（不推荐）"
     )
@@ -93,7 +105,9 @@ def create_parser():
     openclaw_test_parser = subparsers.add_parser(
         "openclaw-test", help="测试OpenClaw模型连接"
     )
-    openclaw_test_parser.add_argument("--provider", required=True, help="Provider名称")
+    openclaw_test_parser.add_argument(
+        "--provider", required=True, help="Provider名称"
+    )
 
     # openclaw-validate命令
     subparsers.add_parser("openclaw-validate", help="验证OpenClaw配置")
@@ -109,7 +123,9 @@ def create_parser():
     openclaw_custom_parser.add_argument(
         "--provider", required=True, help="Provider名称"
     )
-    openclaw_custom_parser.add_argument("--api-endpoint", required=True, help="API端点")
+    openclaw_custom_parser.add_argument(
+        "--api-endpoint", required=True, help="API端点"
+    )
     openclaw_custom_parser.add_argument("--description", help="模型描述")
 
     # models命令
@@ -257,7 +273,9 @@ def main():
 
             print(
                 json.dumps(
-                    claude_config.get_current_config(), indent=2, ensure_ascii=False
+                    claude_config.get_current_config(),
+                    indent=2,
+                    ensure_ascii=False
                 )
             )
 
@@ -356,10 +374,15 @@ def main():
                     print(f"\n  [{provider_info['name']}]")
                     for model in provider_info.get("models", []):
                         print(f"    {model.id} - {model.name}")
-                        print(f"      上下文: {model.context_length//1000}K tokens")
+                        print(
+                            f"      上下文: {model.context_length//1000}K tokens"
+                        )
                         if model.api_pricing:
+                            price_input = model.api_pricing.get(
+                                'input_per_1m', 'N/A'
+                            )
                             print(
-                                f"      API价格: 输入 {model.api_pricing.get('input_per_1m', 'N/A')}元/百万tokens"
+                                f"      API价格: 输入 {price_input}元/百万tokens"
                             )
 
         return 0

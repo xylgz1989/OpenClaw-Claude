@@ -4,7 +4,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 
 class PricingTier(Enum):
@@ -70,7 +70,7 @@ class ModelRegistry:
                                 "代码生成",
                                 "201种语言",
                             ],
-                            api_endpoint="https://dashscope.aliyuncs.com/api/v1",
+                            api_endpoint=("https://dashscope.aliyuncs.com/api/v1"),
                             docs_url="https://help.aliyun.com/dashscope",
                             release_date="2026-02-16",
                             parameters="397B/17B",
@@ -224,7 +224,7 @@ class ModelRegistry:
             return self._models
         return self._models.get(category, {})
 
-    def get_model_info(self, model_id: str) -> ModelInfo:
+    def get_model_info(self, model_id: str) -> Optional[ModelInfo]:
         """获取特定模型信息"""
         for category_providers in self._models.values():
             for provider_info in category_providers.values():

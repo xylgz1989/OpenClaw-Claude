@@ -22,13 +22,21 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "name": "智谱 GLM",
             "description": "国产GLM模型，编程能力强",
             "base_url": "https://open.bigmodel.cn/api/anthropic",
-            "models": {"opus": "glm-5", "sonnet": "glm-4.7", "haiku": "glm-4.5-air"},
+            "models": {
+                "opus": "glm-5",
+                "sonnet": "glm-4.7",
+                "haiku": "glm-4.5-air"
+            },
         },
         "zai": {
             "name": "Z.AI Coding",
             "description": "智谱Coding Plan专用端点",
             "base_url": "https://api.z.ai/api/coding/paas/v4",
-            "models": {"opus": "glm-5", "sonnet": "glm-4.7", "haiku": "glm-4.5-air"},
+            "models": {
+                "opus": "glm-5",
+                "sonnet": "glm-4.7",
+                "haiku": "glm-4.5-air"
+            },
         },
         "aliyun": {
             "name": "阿里云百炼",
@@ -183,7 +191,9 @@ fixtures/
         """加载自定义预设"""
         if self.CUSTOM_PRESETS_PATH.exists():
             try:
-                with open(self.CUSTOM_PRESETS_PATH, "r", encoding="utf-8") as f:
+                with open(
+                    self.CUSTOM_PRESETS_PATH, "r", encoding="utf-8"
+                ) as f:
                     self.custom_presets = json.load(f)
                 self.logger.info("已加载自定义预设")
             except Exception as e:
@@ -211,7 +221,11 @@ fixtures/
             return False
 
     def apply_preset(
-        self, preset_id: str, api_key: str, model: Optional[str] = None, **kwargs
+        self,
+        preset_id: str,
+        api_key: str,
+        model: Optional[str] = None,
+        **kwargs
     ) -> bool:
         """应用预设配置"""
         # 合并内置预设和自定义预设
@@ -288,7 +302,9 @@ fixtures/
 
         return self.save_custom_presets()
 
-    def create_claudeignore(self, custom_patterns: Optional[List[str]] = None) -> bool:
+    def create_claudeignore(
+        self, custom_patterns: Optional[List[str]] = None
+    ) -> bool:
         """创建.claudeignore文件"""
         content = self.DEFAULT_CLAUDEIGNORE
 
@@ -319,7 +335,8 @@ fixtures/
             print(f"      描述: {preset['description']}")
             print(f"      Base URL: {preset['base_url']}")
             print(
-                f"      模型: Opus={preset['models']['opus']}, Sonnet={preset['models']['sonnet']}"
+                f"      模型: Opus={preset['models']['opus']}, "
+                f"Sonnet={preset['models']['sonnet']}"
             )
 
         if self.custom_presets:

@@ -37,7 +37,9 @@ def get_api_key_interactive(service_name: str) -> str:
     """
     # 首先尝试从keyring获取
     try:
-        stored_key = keyring.get_password(f"openclaw-{service_name}", "api_key")
+        stored_key = keyring.get_password(
+            f"openclaw-{service_name}", "api_key"
+        )
         if stored_key:
             use_stored = (
                 input(f"是否使用已保存的{service_name} API Key? [Y/n]: ")
@@ -65,7 +67,9 @@ def get_api_key_interactive(service_name: str) -> str:
         save_key = input("是否保存API Key到系统密钥环? [Y/n]: ").strip().lower()
         if save_key in ["", "y"]:
             try:
-                keyring.set_password(f"openclaw-{service_name}", "api_key", api_key)
+                keyring.set_password(
+                    f"openclaw-{service_name}", "api_key", api_key
+                )
                 print("API Key已安全保存")
             except Exception as e:
                 print(f"警告: 无法保存API Key到密钥环: {e}")
@@ -73,7 +77,9 @@ def get_api_key_interactive(service_name: str) -> str:
         return api_key
 
 
-def mask_sensitive_data(data: str, mask_char: str = "*", visible_chars: int = 4) -> str:
+def mask_sensitive_data(
+    data: str, mask_char: str = "*", visible_chars: int = 4
+) -> str:
     """遮蔽敏感数据
 
     Args:

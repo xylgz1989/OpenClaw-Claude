@@ -2,7 +2,7 @@
 配置向导命令
 """
 
-from typing import List, Any
+from typing import List, Any, Optional
 from .base import BaseCommand
 from ..config.claude import ClaudeCodeConfigManager
 from ..config.openclaw import OpenClawConfigManager
@@ -200,7 +200,10 @@ class WizardCommand(BaseCommand):
         )
 
     def _get_user_input(
-        self, prompt: str, required: bool = False, default: str = None
+        self,
+        prompt: str,
+        required: bool = False,
+        default: Optional[str] = None,
     ) -> str:
         """获取用户输入"""
         while True:

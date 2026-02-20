@@ -23,7 +23,9 @@ class TestClaudeCodeConfigManager:
                 "CUSTOM_PRESETS_PATH",
                 Path(tmpdir) / "custom_presets.json",
             ):
-                manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
+                manager = ClaudeCodeConfigManager.__new__(
+                    ClaudeCodeConfigManager
+                )
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = {}
@@ -44,7 +46,9 @@ class TestClaudeCodeConfigManager:
                 "CUSTOM_PRESETS_PATH",
                 Path(tmpdir) / "custom_presets.json",
             ):
-                manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
+                manager = ClaudeCodeConfigManager.__new__(
+                    ClaudeCodeConfigManager
+                )
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = manager.create_default_config()
@@ -71,7 +75,9 @@ class TestClaudeCodeConfigManager:
                 "CUSTOM_PRESETS_PATH",
                 Path(tmpdir) / "custom_presets.json",
             ):
-                manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
+                manager = ClaudeCodeConfigManager.__new__(
+                    ClaudeCodeConfigManager
+                )
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = manager.create_default_config()
@@ -86,13 +92,18 @@ class TestClaudeCodeConfigManager:
             config_path = Path(tmpdir) / "test_settings.json"
             custom_presets_path = Path(tmpdir) / "custom_presets.json"
             with patch.object(
-                ClaudeCodeConfigManager, "CUSTOM_PRESETS_PATH", custom_presets_path
+                ClaudeCodeConfigManager,
+                "CUSTOM_PRESETS_PATH",
+                custom_presets_path
             ):
                 with patch(
-                    "openclaw_claude_config.config.claude.set_secure_permissions",
+                    "openclaw_claude_config.config.claude."
+                    "set_secure_permissions",
                     return_value=True,
                 ):
-                    manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
+                    manager = ClaudeCodeConfigManager.__new__(
+                        ClaudeCodeConfigManager
+                    )
                     manager.config_path = config_path
                     manager.logger = MagicMock()
                     manager.config = manager.create_default_config()
@@ -123,7 +134,9 @@ class TestClaudeCodeConfigManager:
                 "CUSTOM_PRESETS_PATH",
                 Path(tmpdir) / "custom_presets.json",
             ):
-                manager = ClaudeCodeConfigManager.__new__(ClaudeCodeConfigManager)
+                manager = ClaudeCodeConfigManager.__new__(
+                    ClaudeCodeConfigManager
+                )
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = manager.create_default_config()
@@ -156,7 +169,9 @@ class TestOpenClawConfigManager:
                 "CUSTOM_MODELS_PATH",
                 Path(tmpdir) / "custom_models.json",
             ):
-                manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
+                manager = OpenClawConfigManager.__new__(
+                    OpenClawConfigManager
+                )
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = {}
@@ -178,18 +193,25 @@ class TestOpenClawConfigManager:
                 "CUSTOM_MODELS_PATH",
                 Path(tmpdir) / "custom_models.json",
             ):
-                manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
+                manager = OpenClawConfigManager.__new__(
+                    OpenClawConfigManager
+                )
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = manager.create_default_config()
                 manager.custom_models = {}
 
                 result = manager.set_model(
-                    "test_provider/test_model", "test_api_key", "https://api.test.com"
+                    "test_provider/test_model",
+                    "test_api_key",
+                    "https://api.test.com"
                 )
                 assert result is True
-                assert manager.get("agent.model") == "test_provider/test_model"
-                assert manager.get("models.test_provider.apiKey") == "test_api_key"
+                assert (
+                    manager.get("agent.model") == "test_provider/test_model"
+                )
+                api_key = manager.get("models.test_provider.apiKey")
+                assert api_key == "test_api_key"
                 assert (
                     manager.get("models.test_provider.baseUrl")
                     == "https://api.test.com"
@@ -244,13 +266,18 @@ class TestOpenClawConfigManager:
             config_path = Path(tmpdir) / "test_openclaw.json"
             custom_models_path = Path(tmpdir) / "custom_models.json"
             with patch.object(
-                OpenClawConfigManager, "CUSTOM_MODELS_PATH", custom_models_path
+                OpenClawConfigManager,
+                "CUSTOM_MODELS_PATH",
+                custom_models_path
             ):
                 with patch(
-                    "openclaw_claude_config.config.openclaw.set_secure_permissions",
+                    "openclaw_claude_config.config.openclaw."
+                    "set_secure_permissions",
                     return_value=True,
                 ):
-                    manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
+                    manager = OpenClawConfigManager.__new__(
+                        OpenClawConfigManager
+                    )
                     manager.config_path = config_path
                     manager.logger = MagicMock()
                     manager.config = manager.create_default_config()

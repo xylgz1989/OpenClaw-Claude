@@ -212,7 +212,9 @@ class OpenClawConfigManager(BaseConfigManager):
         for provider, config in models.items():
             masked_config = config.copy()
             if "apiKey" in masked_config:
-                masked_config["apiKey"] = mask_sensitive_data(masked_config["apiKey"])
+                masked_config["apiKey"] = mask_sensitive_data(
+                    masked_config["apiKey"]
+                )
             masked_models[provider] = masked_config
 
         return masked_models

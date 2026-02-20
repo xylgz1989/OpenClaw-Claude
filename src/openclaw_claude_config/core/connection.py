@@ -73,7 +73,7 @@ class ConnectionValidator:
 
                     if response.status == 200:
                         result["success"] = True
-                        result["message"] = f"连接成功! 延迟: {latency_ms}ms"
+                        message = f"连接成功! 延迟: {latency_ms}ms"
 
                         # 尝试解析可用模型
                         try:
@@ -82,11 +82,11 @@ class ConnectionValidator:
                             if "data" in resp_json and isinstance(
                                 resp_json["data"], list
                             ):
-                                result[
-                                    "message"
-                                ] += f", 可用模型: {len(resp_json['data'])}个"
+                                message += f", 可用模型: {len(resp_json['data'])}个"
                         except Exception as e:
                             self.logger.debug(f"解析响应失败: {e}")
+
+                        result["message"] = message
 
                         break
                     else:

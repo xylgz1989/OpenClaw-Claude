@@ -18,7 +18,10 @@ class ConnectionError(ConfigError):
     """连接相关错误"""
 
     def __init__(
-        self, message: str, error_type: str, details: Optional[Dict[str, Any]] = None
+        self,
+        message: str,
+        error_type: str,
+        details: Optional[Dict[str, Any]] = None
     ):
         super().__init__(message, details)
         self.error_type = error_type
