@@ -7,7 +7,7 @@ name = "openclaw-claude-config"
 version = "2.0.0"
 description = "A unified configuration tool for Claude Code and OpenClaw"
 readme = "README_v2.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
     {name = "OpenClaw Claude Config Team", email = "contact@example.com"}
@@ -21,9 +21,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
@@ -55,7 +52,7 @@ dev = [
 
 [tool.black]
 line-length = 79
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = ["py311", "py312"]
 
 [tool.mypy]
 python_version = "3.13"

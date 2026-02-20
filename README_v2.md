@@ -182,7 +182,7 @@ python openclaw_claude_config_v2.py models international
 
 ## 📋 系统要求
 
-- Python 3.8+
+- Python 3.11+
 - 支持操作系统: CentOS, Ubuntu, Debian, RHEL, Fedora, Arch, macOS, Windows
 
 ## 📄 许可证
