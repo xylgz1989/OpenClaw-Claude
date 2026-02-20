@@ -1,133 +1,190 @@
-# OpenClaw-Claude
-you can send message to OpenClaw, OpenClaw call Claude code to work
+# OpenClaw + Claude Code 统一配置工具 v2
 
-## OpenClaw-Claude Code Integration Addition
+🚀 一个功能强大的统一配置工具，支持Claude Code LLM配置、OpenClaw配置生成，以及两者之间的联动。
 
-As an extension to the core functionality, this repository also includes:
+## ✨ 功能特性
 
-### ✨ Additional Features
+### 1. Claude Code LLM配置（参考cc-switch）
 
-#### 1. Intelligent Project Rule Prioritization
-- **Rule Detection**: Automatically detects existing project rules in project files
-- **Priority Processing**: Prioritizes project rules over Specification Driven Development (SDD)
-- **SDD Fallback**: Falls back to SDD when no project rules are found
-- **Smart Decision Making**: Intelligent handling based on project context
+- **模型分层策略**: 支持Primary + Fallbacks模型分层
+- **上下文文件精简**: 自动创建`.claudeignore`文件
+- **预设配置**: 支持9种内置预设，一键切换
+- **自定义预设**: 支持添加自定义LLM预设
 
-#### 2. Tencent Cloud Light Server Optimization
-- **Resource Management**: Optimized for resource-constrained environments
-- **Network Stability**: Enhanced connection handling for cloud environments
-- **Timeout Adjustments**: Tuned timeouts suitable for light servers
-- **Monitoring**: Built-in resource and performance monitoring
+### 2. 连接验证功能
 
-#### 3. OpenClaw Integration
-- **Skill-based Architecture**: Modular skill system for different capabilities
-- **Zero-polling Hooks**: Efficient completion notification system
-- **Secure Configuration**: Safe API key handling
-- **Cross-platform**: Works across different operating systems
+每种LLM设置后都会自动验证连接，反馈成功或具体失败原因：
 
-### 🚀 Quick Start
+- ✅ **连接成功**: 显示延迟和可用模型数量
+- ❌ **认证失败**: API Key无效或已过期
+- ❌ **权限不足**: 无法访问该资源
+- ❌ **模型不存在**: 指定的模型ID无效
+- ❌ **速率限制**: 请求过于频繁
+- ❌ **网络错误**: DNS解析失败或连接超时
+- ❌ **SSL证书错误**: 证书验证失败
 
-#### Prerequisites
-- Linux/Unix environment (optimized for Tencent Cloud Light Server)
-- bash shell
-- curl
-- OpenClaw installed and running
+### 3. 自定义LLM设置
 
-#### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/xylgz1989/OpenClaw-Claude.git
-   cd OpenClaw-Claude
-   ```
+支持用户添加自定义模型配置：
 
-2. Run the Tencent Cloud Light Server setup:
-   ```bash
-   chmod +x run_tencent_setup.sh
-   ./run_tencent_setup.sh
-   ```
-
-3. Configure your API keys:
-   ```bash
-   nano ~/.openclaw/config.env
-   ```
-
-4. Verify the installation:
-   ```bash
-   ~/.openclaw/verify_setup.sh
-   ```
-
-### 🛠️ Usage
-
-#### Project Rule Detection
-To detect project rules in a directory:
 ```bash
-~/.openclaw/tools/project-rules-detector.sh [project_directory]
+# 添加自定义Claude预设
+python openclaw_claude_config_v2.py claude-custom \
+    --id my-provider \
+    --name "My Provider" \
+    --description "自定义LLM提供商" \
+    --base-url https://api.myprovider.com/v1 \
+    --opus-model gpt-4 \
+    --sonnet-model gpt-3.5-turbo \
+    --haiku-model gpt-3.5-turbo
+
+# 添加自定义OpenClaw模型
+python openclaw_claude_config_v2.py openclaw-custom \
+    --id myprovider/my-model \
+    --name "My Model" \
+    --provider myprovider \
+    --api-endpoint https://api.myprovider.com/v1
 ```
 
-#### System Health Check
-Monitor system status:
+### 4. OpenClaw完整配置生成
+
+- **保证配置后可正常运行**
+- **模型分层策略**: primary + fallbacks
+- **支持通道配置**: 飞书、企业微信、钉钉等
+- **配置验证**: 自动检查必需字段和端口范围
+
+### 5. 支持的模型
+
+#### 国内模型 (2026最新)
+| 厂商 | 模型 | 上下文 | API定价 |
+|------|------|--------|---------|
+| 通义千问 | Qwen 3.5-Plus | 1M tokens | ¥0.8/百万 |
+| 智谱清言 | GLM-5 | 200K tokens | ¥2.0/百万 |
+| DeepSeek | DeepSeek-V4 | 1M tokens | ¥0.5/百万 |
+| Kimi | Kimi K2.5 | 256K tokens | ¥0.6/百万 |
+| MiniMax | M2.5 | 256K tokens | ¥2.0/百万 |
+
+#### 国际模型
+| 厂商 | 模型 | 上下文 | API定价 |
+|------|------|--------|---------|
+| Anthropic | Claude Opus 4.5 | 200K tokens | $15/百万 |
+| Anthropic | Claude Sonnet 4 | 200K tokens | $3/百万 |
+
+## 🚀 快速开始
+
+### 交互式配置向导
+
 ```bash
-~/.openclaw/health_check.sh
+python openclaw_claude_config_v2.py wizard
 ```
 
-#### Integration Commands
-Once OpenClaw is configured, use natural language commands such as:
-```
-Claude, please implement [feature] following the project rules
-```
-or
-```
-Claude, please use SDD to develop [feature]
-```
+向导将引导您完成：
+1. 配置Claude Code LLM（自动测试连接）
+2. 配置OpenClaw（自动测试连接）
 
-### 📁 Project Structure
+### 配置Claude Code
 
-```
-OpenClaw-Claude/
-├── setup_tencent_lighthouse.sh    # Main setup for Tencent Cloud
-├── run_tencent_setup.sh          # Run script for setup
-├── verify_installation.sh        # Verify installation
-├── docs/                         # Documentation
-│   ├── README.md
-│   ├── USAGE_GUIDE.md
-│   └── TROUBLESHOOTING.md
-├── .github/
-│   └── workflows/
-│       └── ci.yml               # CI/CD pipeline
-├── LICENSE
-├── CHANGELOG.md
-└── CONTRIBUTING.md
+```bash
+# 使用预设配置（自动测试连接）
+python openclaw_claude_config_v2.py claude-config --preset zhipu --api-key YOUR_API_KEY
+
+# 跳过连接测试
+python openclaw_claude_config_v2.py claude-config --preset zhipu --api-key YOUR_API_KEY --no-test
+
+# 测试当前配置
+python openclaw_claude_config_v2.py claude-test
+
+# 添加自定义预设
+python openclaw_claude_config_v2.py claude-custom \
+    --id my-provider \
+    --name "My Provider" \
+    --description "自定义LLM提供商" \
+    --base-url https://api.myprovider.com/v1 \
+    --opus-model gpt-4 \
+    --sonnet-model gpt-3.5-turbo \
+    --haiku-model gpt-3.5-turbo
 ```
 
-### ⚙️ Configuration
+### 配置OpenClaw
 
-#### API Keys
-Edit `~/.openclaw/config.env` to set:
-- `ANTHROPIC_API_KEY` - Your Anthropic API key
-- `OPENCLAW_TOKEN` - Your OpenClaw authentication token
+```bash
+# 设置模型（自动测试连接）
+python openclaw_claude_config_v2.py openclaw-config \
+    --model zhipu/glm-5 \
+    --api-key YOUR_API_KEY \
+    --base-url https://open.bigmodel.cn/api/paas/v4
 
-#### Environment Variables
-The configuration file includes:
-- Network timeout settings
-- Resource limits for light servers
-- Logging configuration
-- Backup settings
+# 跳过连接测试
+python openclaw_claude_config_v2.py openclaw-config \
+    --model zhipu/glm-5 \
+    --api-key YOUR_API_KEY \
+    --base-url https://open.bigmodel.cn/api/paas/v4 \
+    --no-test
 
-### 🤝 Contributing
+# 测试指定provider的连接
+python openclaw_claude_config_v2.py openclaw-test --provider zhipu
 
-We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) to get started.
+# 添加自定义模型
+python openclaw_claude_config_v2.py openclaw-custom \
+    --id myprovider/my-model \
+    --name "My Model" \
+    --provider myprovider \
+    --api-endpoint https://api.myprovider.com/v1
 
-### 📄 License
+# 验证配置
+python openclaw_claude_config_v2.py openclaw-validate
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### 列出可用模型
 
-### 🛡️ Security
+```bash
+# 列出所有模型
+python openclaw_claude_config_v2.py models all
 
-This tool handles API keys and sensitive configuration data. Please follow security best practices:
-- Store API keys securely and do not commit them to version control
-- Regularly rotate your API keys
-- Review the code for any security concerns before using
+# 仅列出国内模型
+python openclaw_claude_config_v2.py models china
 
-### 🐛 Issues
+# 仅列出国际模型
+python openclaw_claude_config_v2.py models international
+```
 
-If you encounter any problems, please file an issue on the [Issues](https://github.com/xylgz1989/OpenClaw-Claude/issues) page.
+## 📁 配置文件
+
+### Claude Code配置
+- 路径: `~/.claude/settings.json`
+- 自定义预设: `~/.claude/custom_presets.json`
+
+### OpenClaw配置
+- 路径: `~/.openclaw/openclaw.json`
+- 自定义模型: `~/.openclaw/custom_models.json`
+
+## 🔧 连接验证说明
+
+工具会在设置LLM后自动测试连接，验证内容包括：
+
+1. **DNS解析**: 检查Base URL是否可解析
+2. **网络连接**: 检查是否能连接到服务器
+3. **SSL证书**: 检查证书是否有效
+4. **认证**: 检查API Key是否有效
+5. **权限**: 检查是否有访问权限
+6. **模型可用性**: 检查指定模型是否存在
+
+### 错误类型
+
+| 错误类型 | 说明 | 解决方案 |
+|---------|------|---------|
+| auth | 认证失败 | 检查API Key是否正确 |
+| network | 网络错误 | 检查网络连接或Base URL |
+| model | 模型不存在 | 检查模型ID是否正确 |
+| rate_limit | 速率限制 | 稍后再试或升级套餐 |
+| server | 服务器错误 | 服务端问题，稍后重试 |
+| config | 配置错误 | 检查配置是否完整 |
+
+## 📋 系统要求
+
+- Python 3.11+
+- 支持操作系统: CentOS, Ubuntu, Debian, RHEL, Fedora, Arch, macOS, Windows
+
+## 📄 许可证
+
+MIT License

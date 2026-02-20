@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "openclaw-claude-config"
 version = "2.0.0"
 description = "A unified configuration tool for Claude Code and OpenClaw"
-readme = "README_v2.md"
+readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
