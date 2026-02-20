@@ -81,7 +81,9 @@ class OpenClawConfigManager(BaseConfigManager):
             try:
                 port_num = int(port)
                 if not (1024 <= port_num <= 65535):
-                    errors.append(f"Gateway端口 {port} 超出有效范围 (1024-65535)")
+                    errors.append(
+                        f"Gateway端口 {port} 超出有效范围 (1024-65535)"
+                    )
             except ValueError:
                 errors.append(f"Gateway端口 '{port}' 不是有效的数字")
 
@@ -138,7 +140,9 @@ class OpenClawConfigManager(BaseConfigManager):
         # 解析模型ID
         parts = model_id.split("/")
         if len(parts) != 2:
-            raise ConfigError(f"模型ID格式错误: {model_id} (应为 provider/model)")
+            raise ConfigError(
+                f"模型ID格式错误: {model_id} (应为 provider/model)"
+            )
 
         provider, model_name = parts
 

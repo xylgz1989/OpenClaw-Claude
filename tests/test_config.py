@@ -94,7 +94,7 @@ class TestClaudeCodeConfigManager:
             with patch.object(
                 ClaudeCodeConfigManager,
                 "CUSTOM_PRESETS_PATH",
-                custom_presets_path
+                custom_presets_path,
             ):
                 with patch(
                     "openclaw_claude_config.config.claude."
@@ -169,9 +169,7 @@ class TestOpenClawConfigManager:
                 "CUSTOM_MODELS_PATH",
                 Path(tmpdir) / "custom_models.json",
             ):
-                manager = OpenClawConfigManager.__new__(
-                    OpenClawConfigManager
-                )
+                manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = {}
@@ -193,9 +191,7 @@ class TestOpenClawConfigManager:
                 "CUSTOM_MODELS_PATH",
                 Path(tmpdir) / "custom_models.json",
             ):
-                manager = OpenClawConfigManager.__new__(
-                    OpenClawConfigManager
-                )
+                manager = OpenClawConfigManager.__new__(OpenClawConfigManager)
                 manager.config_path = config_path
                 manager.logger = MagicMock()
                 manager.config = manager.create_default_config()
@@ -204,12 +200,10 @@ class TestOpenClawConfigManager:
                 result = manager.set_model(
                     "test_provider/test_model",
                     "test_api_key",
-                    "https://api.test.com"
+                    "https://api.test.com",
                 )
                 assert result is True
-                assert (
-                    manager.get("agent.model") == "test_provider/test_model"
-                )
+                assert manager.get("agent.model") == "test_provider/test_model"
                 api_key = manager.get("models.test_provider.apiKey")
                 assert api_key == "test_api_key"
                 assert (
@@ -266,9 +260,7 @@ class TestOpenClawConfigManager:
             config_path = Path(tmpdir) / "test_openclaw.json"
             custom_models_path = Path(tmpdir) / "custom_models.json"
             with patch.object(
-                OpenClawConfigManager,
-                "CUSTOM_MODELS_PATH",
-                custom_models_path
+                OpenClawConfigManager, "CUSTOM_MODELS_PATH", custom_models_path
             ):
                 with patch(
                     "openclaw_claude_config.config.openclaw."

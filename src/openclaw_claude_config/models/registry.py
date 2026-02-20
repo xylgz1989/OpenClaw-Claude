@@ -70,11 +70,16 @@ class ModelRegistry:
                                 "代码生成",
                                 "201种语言",
                             ],
-                            api_endpoint=("https://dashscope.aliyuncs.com/api/v1"),
+                            api_endpoint=(
+                                "https://dashscope.aliyuncs.com/api/v1"
+                            ),
                             docs_url="https://help.aliyun.com/dashscope",
                             release_date="2026-02-16",
                             parameters="397B/17B",
-                            api_pricing={"input_per_1m": 0.8, "output_per_1m": 2.4},
+                            api_pricing={
+                                "input_per_1m": 0.8,
+                                "output_per_1m": 2.4,
+                            },
                             is_anthropic_compatible=True,
                         ),
                     ],
@@ -86,7 +91,10 @@ class ModelRegistry:
                             id="zhipu/glm-5",
                             name="GLM-5",
                             provider="zhipu",
-                            description="智谱最强旗舰，开源SOTA，编程能力接近Claude Opus 4.5",
+                            description=(
+                                "智谱最强旗舰，开源SOTA，编程能力接近Claude "
+                                "Opus 4.5"
+                            ),
                             pricing_tiers=[
                                 PricingTier.PAY_PER_USE,
                                 PricingTier.LITE,
@@ -95,11 +103,16 @@ class ModelRegistry:
                             ],
                             context_length=200000,
                             features=["开源SOTA", "编程能力顶尖", "Agent能力"],
-                            api_endpoint="https://api.z.ai/api/coding/paas/v4",
+                            api_endpoint=(
+                                "https://api.z.ai/api/coding/paas/v4"
+                            ),
                             docs_url="https://www.bigmodel.cn",
                             release_date="2026-02-12",
                             parameters="745B",
-                            api_pricing={"input_per_1m": 2.0, "output_per_1m": 6.0},
+                            api_pricing={
+                                "input_per_1m": 2.0,
+                                "output_per_1m": 6.0,
+                            },
                             is_anthropic_compatible=True,
                         ),
                     ],
@@ -112,14 +125,24 @@ class ModelRegistry:
                             name="DeepSeek-V4",
                             provider="deepseek",
                             description="下一代旗舰模型，上下文100万token",
-                            pricing_tiers=[PricingTier.PAY_PER_USE, PricingTier.FREE],
+                            pricing_tiers=[
+                                PricingTier.PAY_PER_USE,
+                                PricingTier.FREE,
+                            ],
                             context_length=1000000,
-                            features=["超长上下文1M", "代码能力顶尖", "低成本"],
+                            features=[
+                                "超长上下文1M",
+                                "代码能力顶尖",
+                                "低成本",
+                            ],
                             api_endpoint="https://api.deepseek.com/v1",
                             docs_url="https://platform.deepseek.com/docs",
                             release_date="2026-03-31(预计)",
                             parameters="未公开",
-                            api_pricing={"input_per_1m": 0.5, "output_per_1m": 2.0},
+                            api_pricing={
+                                "input_per_1m": 0.5,
+                                "output_per_1m": 2.0,
+                            },
                             is_anthropic_compatible=True,
                         ),
                     ],
@@ -131,7 +154,7 @@ class ModelRegistry:
                             id="moonshot/kimi-k2.5",
                             name="Kimi K2.5",
                             provider="moonshot",
-                            description="最强编程模型，原生多模态，总参数1T",
+                            description=("最强编程模型，原生多模态，总参数1T"),
                             pricing_tiers=[
                                 PricingTier.PAY_PER_USE,
                                 PricingTier.FREE,
@@ -139,12 +162,19 @@ class ModelRegistry:
                                 PricingTier.PRO,
                             ],
                             context_length=256000,
-                            features=["原生多模态", "超长上下文256K", "100 Tokens/s"],
+                            features=[
+                                "原生多模态",
+                                "超长上下文256K",
+                                "100 Tokens/s",
+                            ],
                             api_endpoint="https://api.moonshot.cn/v1",
                             docs_url="https://platform.moonshot.cn/docs",
                             release_date="2026-01-30",
                             parameters="1T/32B MoE",
-                            api_pricing={"input_per_1m": 0.6, "output_per_1m": 3.0},
+                            api_pricing={
+                                "input_per_1m": 0.6,
+                                "output_per_1m": 3.0,
+                            },
                             is_anthropic_compatible=True,
                         ),
                     ],
@@ -160,11 +190,16 @@ class ModelRegistry:
                             pricing_tiers=[PricingTier.PAY_PER_USE],
                             context_length=256000,
                             features=["高速推理", "低成本"],
-                            api_endpoint="https://api.minimaxi.com/anthropic",
+                            api_endpoint=(
+                                "https://api.minimaxi.com/anthropic"
+                            ),
                             docs_url="https://www.minimaxi.com",
                             release_date="2026-02-12",
                             parameters="未公开",
-                            api_pricing={"input_per_1m": 2.0, "output_per_1m": 16.0},
+                            api_pricing={
+                                "input_per_1m": 2.0,
+                                "output_per_1m": 16.0,
+                            },
                             is_anthropic_compatible=True,
                         ),
                     ],
@@ -184,14 +219,20 @@ class ModelRegistry:
                             name="Claude Opus 4.5",
                             provider="anthropic",
                             description="Anthropic最强推理模型",
-                            pricing_tiers=[PricingTier.PAY_PER_USE, PricingTier.PRO],
+                            pricing_tiers=[
+                                PricingTier.PAY_PER_USE,
+                                PricingTier.PRO,
+                            ],
                             context_length=200000,
                             features=["最强推理", "代码能力", "长上下文"],
                             api_endpoint="https://api.anthropic.com/v1",
                             docs_url="https://docs.anthropic.com",
                             release_date="2025",
                             parameters="未公开",
-                            api_pricing={"input_per_1m": 15.0, "output_per_1m": 75.0},
+                            api_pricing={
+                                "input_per_1m": 15.0,
+                                "output_per_1m": 75.0,
+                            },
                             is_anthropic_compatible=True,
                         ),
                         ModelInfo(
@@ -206,7 +247,10 @@ class ModelRegistry:
                             docs_url="https://docs.anthropic.com",
                             release_date="2025",
                             parameters="未公开",
-                            api_pricing={"input_per_1m": 3.0, "output_per_1m": 15.0},
+                            api_pricing={
+                                "input_per_1m": 3.0,
+                                "output_per_1m": 15.0,
+                            },
                             is_anthropic_compatible=True,
                         ),
                     ],

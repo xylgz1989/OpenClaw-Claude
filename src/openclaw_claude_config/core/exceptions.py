@@ -21,7 +21,7 @@ class ConnectionError(ConfigError):
         self,
         message: str,
         error_type: str,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         super().__init__(message, details)
         self.error_type = error_type

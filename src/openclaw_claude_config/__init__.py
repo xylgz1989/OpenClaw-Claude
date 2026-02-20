@@ -20,9 +20,11 @@ def create_parser():
         epilog="""
 示例:
   %(prog)s wizard                              # 交互式配置向导
-  %(prog)s claude-config --preset zhipu        # 配置Claude Code（交互输入API Key）
+  %(prog)s claude-config --preset zhipu        # 配置Claude Code（交互输入
+                                                # API Key）
   %(prog)s claude-test                         # 测试Claude Code连接
-  %(prog)s openclaw-config --model zhipu/glm-5 # 配置OpenClaw（交互输入API Key）
+  %(prog)s openclaw-config --model zhipu/glm-5 # 配置OpenClaw（交互输入
+                                                # API Key）
   %(prog)s models china                        # 列出国内模型
         """,
     )
@@ -48,7 +50,9 @@ def create_parser():
     claude_parser.add_argument("--preset", required=True, help="预设名称")
     claude_parser.add_argument("--api-key", help="API Key（建议使用交互输入）")
     claude_parser.add_argument("--model", help="指定模型（覆盖预设）")
-    claude_parser.add_argument("--no-test", action="store_true", help="跳过连接测试")
+    claude_parser.add_argument(
+        "--no-test", action="store_true", help="跳过连接测试"
+    )
     claude_parser.add_argument(
         "--no-ssl-verify", action="store_true", help="禁用SSL验证（不推荐）"
     )
@@ -85,14 +89,18 @@ def create_parser():
     claude_ignore_parser = subparsers.add_parser(
         "claude-ignore", help="创建.claudeignore"
     )
-    claude_ignore_parser.add_argument("--patterns", nargs="+", help="自定义忽略模式")
+    claude_ignore_parser.add_argument(
+        "--patterns", nargs="+", help="自定义忽略模式"
+    )
 
     # openclaw-config命令
     openclaw_parser = subparsers.add_parser(
         "openclaw-config", help="配置OpenClaw"
     )
     openclaw_parser.add_argument("--model", required=True, help="模型ID")
-    openclaw_parser.add_argument("--api-key", help="API Key（建议使用交互输入）")
+    openclaw_parser.add_argument(
+        "--api-key", help="API Key（建议使用交互输入）"
+    )
     openclaw_parser.add_argument("--base-url", help="Base URL")
     openclaw_parser.add_argument(
         "--no-test", action="store_true", help="跳过连接测试"
@@ -119,7 +127,12 @@ def create_parser():
     openclaw_custom_parser.add_argument(
         "--id", required=True, help="模型ID (格式: provider/model)"
     )
-    openclaw_custom_parser.add_argument("--name", required=True, help="模型名称")
+    openclaw_custom_parser.add_argument(
+        "--name", required=True, help="模型名称"
+    )
+    openclaw_custom_parser.add_argument(
+        "--name", required=True, help="模型名称"
+    )
     openclaw_custom_parser.add_argument(
         "--provider", required=True, help="Provider名称"
     )
@@ -275,7 +288,7 @@ def main():
                 json.dumps(
                     claude_config.get_current_config(),
                     indent=2,
-                    ensure_ascii=False
+                    ensure_ascii=False,
                 )
             )
 
@@ -307,7 +320,9 @@ def main():
 
                 if not result["success"]:
                     continue_input = (
-                        input("\n连接失败，是否继续保存配置? [y/N]: ").strip().lower()
+                        input("\n连接失败，是否继续保存配置? [y/N]: ")
+                        .strip()
+                        .lower()
                     )
                     if continue_input != "y":
                         return 1
@@ -368,21 +383,25 @@ def main():
             print("-" * 60)
 
             for category, providers in models.items():
-                category_name = "国内模型" if category == "china" else "国际模型"
+                category_name = (
+                    "国内模型" if category == "china" else "国际模型"
+                )
                 print(f"\n{category_name}:")
                 for provider_info in providers.values():
                     print(f"\n  [{provider_info['name']}]")
                     for model in provider_info.get("models", []):
                         print(f"    {model.id} - {model.name}")
                         print(
-                            f"      上下文: {model.context_length//1000}K tokens"
+                            f"      上下文: "
+                            f"{model.context_length // 1000}K tokens"
                         )
                         if model.api_pricing:
                             price_input = model.api_pricing.get(
-                                'input_per_1m', 'N/A'
+                                "input_per_1m", "N/A"
                             )
                             print(
-                                f"      API价格: 输入 {price_input}元/百万tokens"
+                                f"      API价格: 输入 {price_input}"
+                                f"元/百万tokens"
                             )
 
         return 0

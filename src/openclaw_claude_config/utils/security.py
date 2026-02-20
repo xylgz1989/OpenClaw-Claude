@@ -64,7 +64,9 @@ def get_api_key_interactive(service_name: str) -> str:
             continue
 
         # 询问是否保存
-        save_key = input("是否保存API Key到系统密钥环? [Y/n]: ").strip().lower()
+        save_key = (
+            input("是否保存API Key到系统密钥环? [Y/n]: ").strip().lower()
+        )
         if save_key in ["", "y"]:
             try:
                 keyring.set_password(

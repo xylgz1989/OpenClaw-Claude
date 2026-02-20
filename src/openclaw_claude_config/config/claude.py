@@ -25,7 +25,7 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "glm-5",
                 "sonnet": "glm-4.7",
-                "haiku": "glm-4.5-air"
+                "haiku": "glm-4.5-air",
             },
         },
         "zai": {
@@ -35,7 +35,7 @@ class ClaudeCodeConfigManager(BaseConfigManager):
             "models": {
                 "opus": "glm-5",
                 "sonnet": "glm-4.7",
-                "haiku": "glm-4.5-air"
+                "haiku": "glm-4.5-air",
             },
         },
         "aliyun": {
@@ -225,7 +225,7 @@ fixtures/
         preset_id: str,
         api_key: str,
         model: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> bool:
         """应用预设配置"""
         # 合并内置预设和自定义预设
@@ -291,7 +291,9 @@ fixtures/
     ) -> bool:
         """添加自定义预设"""
         if preset_id in self.BUILTIN_PRESETS:
-            raise ConfigError(f"预设ID '{preset_id}' 与内置预设冲突，请使用其他ID")
+            raise ConfigError(
+                f"预设ID '{preset_id}' 与内置预设冲突，请使用其他ID"
+            )
 
         self.custom_presets[preset_id] = {
             "name": name,

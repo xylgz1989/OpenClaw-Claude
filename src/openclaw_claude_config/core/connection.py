@@ -82,7 +82,9 @@ class ConnectionValidator:
                             if "data" in resp_json and isinstance(
                                 resp_json["data"], list
                             ):
-                                message += f", 可用模型: {len(resp_json['data'])}个"
+                                message += (
+                                    f", 可用模型: {len(resp_json['data'])}个"
+                                )
                         except Exception as e:
                             self.logger.debug(f"解析响应失败: {e}")
 
@@ -90,7 +92,9 @@ class ConnectionValidator:
 
                         break
                     else:
-                        raise ConnectionError(f"HTTP {response.status}", "unknown")
+                        raise ConnectionError(
+                            f"HTTP {response.status}", "unknown"
+                        )
 
             except urllib.error.HTTPError as e:
                 latency_ms = int((time.time() - start_time) * 1000)
@@ -112,7 +116,9 @@ class ConnectionValidator:
 
                 # 网络错误重试
                 if attempt < self.max_retries - 1:
-                    self.logger.warning(f"网络错误，{self.retry_delay}秒后重试...")
+                    self.logger.warning(
+                        f"网络错误，{self.retry_delay}秒后重试..."
+                    )
                     time.sleep(self.retry_delay)
 
             except Exception as e:
@@ -174,7 +180,9 @@ class ConnectionValidator:
             context.verify_mode = ssl.CERT_NONE
             return context
 
-    def _handle_http_error(self, error: urllib.error.HTTPError) -> Dict[str, Any]:
+    def _handle_http_error(
+        self, error: urllib.error.HTTPError
+    ) -> Dict[str, Any]:
         """处理HTTP错误"""
         if error.code == 401:
             return {
@@ -204,7 +212,7 @@ class ConnectionValidator:
             return {
                 "error_type": "server",
                 "message": f"服务器错误: {error.code}",
-                "details": f"HTTP {error.code} - 服务端出现问题，请稍后重试",
+                "details": (f"HTTP {error.code} - 服务端出现问题，请稍后重试"),
             }
         else:
             return {
@@ -213,9 +221,13 @@ class ConnectionValidator:
                 "details": str(error),
             }
 
-    def _handle_url_error(self, error: urllib.error.URLError) -> Dict[str, Any]:
+    def _handle_url_error(
+        self, error: urllib.error.URLError
+    ) -> Dict[str, Any]:
         """处理URL错误"""
-        error_str = str(error.reason) if hasattr(error, "reason") else str(error)
+        error_str = (
+            str(error.reason) if hasattr(error, "reason") else str(error)
+        )
 
         if (
             "Name or service not known" in error_str
@@ -226,7 +238,10 @@ class ConnectionValidator:
                 "message": "网络错误: 无法解析服务器地址",
                 "details": "DNS解析失败 - 请检查Base URL是否正确",
             }
-        elif "Connection refused" in error_str or "Connection timed out" in error_str:
+        elif (
+            "Connection refused" in error_str
+            or "Connection timed out" in error_str
+        ):
             return {
                 "error_type": "network",
                 "message": "网络错误: 无法连接到服务器",
