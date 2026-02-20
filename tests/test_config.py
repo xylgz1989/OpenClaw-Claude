@@ -4,12 +4,11 @@
 
 import pytest
 import tempfile
-import json
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 from openclaw_claude_config.config.claude import ClaudeCodeConfigManager
 from openclaw_claude_config.config.openclaw import OpenClawConfigManager
-from openclaw_claude_config.core.exceptions import ConfigError, ValidationError
+from openclaw_claude_config.core.exceptions import ConfigError
 
 
 class TestClaudeCodeConfigManager:

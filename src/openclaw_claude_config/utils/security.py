@@ -2,10 +2,8 @@
 安全工具模块
 """
 
-import os
 import stat
 from pathlib import Path
-from typing import Optional
 import getpass
 import keyring
 

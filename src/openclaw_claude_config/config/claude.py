@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from .base import BaseConfigManager
 from ..core.exceptions import ConfigError
-from ..utils.logger import get_logger
 from ..utils.security import set_secure_permissions, mask_sensitive_data
 
 

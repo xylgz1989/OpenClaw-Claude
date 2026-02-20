@@ -6,9 +6,9 @@ import json
 import re
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, List
 from datetime import datetime
-from ..core.exceptions import ConfigError, ValidationError
+from ..core.exceptions import ConfigError
 from ..utils.logger import get_logger
 from ..utils.security import set_secure_permissions
 
@@ -49,7 +49,7 @@ class BaseConfigManager(ABC):
                 self.logger.error(f"加载配置失败: {e}")
                 raise ConfigError(f"加载配置失败: {e}")
         else:
-            self.logger.info(f"配置文件不存在，创建默认配置")
+            self.logger.info("配置文件不存在，创建默认配置")
             self.config = self.create_default_config()
             self.save_config()
 

@@ -2,15 +2,13 @@
 配置向导命令
 """
 
-import sys
-from typing import List
+from typing import List, Any
 from .base import BaseCommand
 from ..config.claude import ClaudeCodeConfigManager
 from ..config.openclaw import OpenClawConfigManager
 from ..core.connection import ConnectionValidator
 from ..models.registry import ModelRegistry
 from ..utils.security import get_api_key_interactive
-from ..utils.logger import get_logger
 
 
 class WizardCommand(BaseCommand):

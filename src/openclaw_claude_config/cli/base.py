@@ -3,7 +3,7 @@ CLI命令基类
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 from ..core.exceptions import ConfigError
 from ..utils.logger import get_logger
 

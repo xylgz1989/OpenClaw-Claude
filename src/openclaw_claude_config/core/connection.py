@@ -10,11 +10,6 @@ import urllib.error
 from typing import Dict, Any, Optional
 from ..core.exceptions import (
     ConnectionError,
-    AuthenticationError,
-    NetworkError,
-    ModelError,
-    RateLimitError,
-    ServerError,
 )
 from ..utils.logger import get_logger
 
@@ -185,25 +180,25 @@ class ConnectionValidator:
             return {
                 "error_type": "auth",
                 "message": "认证失败: API Key无效或已过期",
-                "details": f"HTTP 401 - 请检查API Key是否正确",
+                "details": "HTTP 401 - 请检查API Key是否正确",
             }
         elif error.code == 403:
             return {
                 "error_type": "auth",
                 "message": "权限不足: 无法访问该资源",
-                "details": f"HTTP 403 - 请检查账户权限或配额",
+                "details": "HTTP 403 - 请检查账户权限或配额",
             }
         elif error.code == 404:
             return {
                 "error_type": "model",
                 "message": "模型不存在: 指定的模型ID无效",
-                "details": f"HTTP 404 - 请检查模型ID是否正确",
+                "details": "HTTP 404 - 请检查模型ID是否正确",
             }
         elif error.code == 429:
             return {
                 "error_type": "rate_limit",
                 "message": "请求过于频繁: 已触发速率限制",
-                "details": f"HTTP 429 - 请稍后再试或升级套餐",
+                "details": "HTTP 429 - 请稍后再试或升级套餐",
             }
         elif error.code >= 500:
             return {
@@ -229,13 +224,13 @@ class ConnectionValidator:
             return {
                 "error_type": "network",
                 "message": "网络错误: 无法解析服务器地址",
-                "details": f"DNS解析失败 - 请检查Base URL是否正确",
+                "details": "DNS解析失败 - 请检查Base URL是否正确",
             }
         elif "Connection refused" in error_str or "Connection timed out" in error_str:
             return {
                 "error_type": "network",
                 "message": "网络错误: 无法连接到服务器",
-                "details": f"连接失败 - 请检查网络连接或服务器状态",
+                "details": "连接失败 - 请检查网络连接或服务器状态",
             }
         elif "SSL" in error_str or "certificate" in error_str:
             return {

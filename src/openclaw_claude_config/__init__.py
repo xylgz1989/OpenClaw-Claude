@@ -6,7 +6,6 @@ OpenClaw + Claude Code 配置工具
 """
 
 import argparse
-import sys
 from pathlib import Path
 
 __version__ = "2.0.0"
