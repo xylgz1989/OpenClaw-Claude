@@ -12,6 +12,8 @@ from ..core.exceptions import (
     ConnectionError,
 )
 from ..utils.logger import get_logger
+from ..utils.security import mask_sensitive_data
+from ..constants import DEFAULT_TIMEOUT, DEFAULT_MAX_RETRIES, DEFAULT_RETRY_DELAY
 
 
 class ConnectionValidator:
@@ -19,9 +21,9 @@ class ConnectionValidator:
 
     def __init__(self):
         self.logger = get_logger(__name__)
-        self.timeout = 15
-        self.max_retries = 3
-        self.retry_delay = 1
+        self.timeout = DEFAULT_TIMEOUT
+        self.max_retries = DEFAULT_MAX_RETRIES
+        self.retry_delay = DEFAULT_RETRY_DELAY
 
     def test_connection(
         self,
@@ -126,8 +128,9 @@ class ConnectionValidator:
                 result["latency_ms"] = latency_ms
                 result["error_type"] = "unknown"
                 result["message"] = f"未知错误: {str(e)}"
-                result["details"] = str(e)
-                self.logger.error(f"连接测试异常: {e}", exc_info=True)
+                # 脱敏敏感信息后再记录
+                result["details"] = mask_sensitive_data(str(e))
+                self.logger.error(f"连接测试异常: {mask_sensitive_data(str(e))}", exc_info=True)
 
         return result
 

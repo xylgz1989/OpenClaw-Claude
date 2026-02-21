@@ -160,6 +160,14 @@ def main():
     from .models.registry import ModelRegistry
     from .utils.security import get_api_key_interactive
     from .utils.logger import setup_logger
+    from .utils.validation import (
+        validate_api_key,
+        validate_url,
+        validate_model_id,
+        validate_preset_id,
+    )
+    from .constants import infer_provider
+    from .core.exceptions import ConfigError, ConnectionError as CoreConnectionError
 
     parser = create_parser()
     args = parser.parse_args()
@@ -183,14 +191,29 @@ def main():
             claude_config = ClaudeCodeConfigManager()
             connection_validator = ConnectionValidator()
 
+            # 验证预设 ID
+            try:
+                validate_preset_id(args.preset)
+            except ValueError as e:
+                logger.error(f"预设 ID 无效: {e}")
+                return 1
+
             # 获取API Key
             api_key = args.api_key or get_api_key_interactive(
                 f"Claude Code ({args.preset})"
             )
 
+            # 验证 API Key
+            try:
+                validate_api_key(api_key)
+            except ValueError as e:
+                logger.error(f"API Key 无效: {e}")
+                return 1
+
             # 应用预设
             kwargs = {}
             if args.model:
+                validate_model_id(args.model)
                 kwargs["model"] = args.model
 
             claude_config.apply_preset(args.preset, api_key, **kwargs)
@@ -205,19 +228,7 @@ def main():
 
                 if base_url and api_key:
                     # 推断provider
-                    provider = None
-                    for p in [
-                        "anthropic",
-                        "openai",
-                        "zhipu",
-                        "qwen",
-                        "deepseek",
-                        "kimi",
-                        "minimax",
-                    ]:
-                        if p in base_url.lower():
-                            provider = p
-                            break
+                    provider = infer_provider(base_url)
 
                     result = connection_validator.test_connection(
                         base_url,
@@ -242,19 +253,7 @@ def main():
                 return 1
 
             # 推断provider
-            provider = None
-            for p in [
-                "anthropic",
-                "openai",
-                "zhipu",
-                "qwen",
-                "deepseek",
-                "kimi",
-                "minimax",
-            ]:
-                if p in base_url.lower():
-                    provider = p
-                    break
+            provider = infer_provider(base_url)
 
             result = connection_validator.test_connection(
                 base_url, api_key, model, provider, verify_ssl=True
@@ -297,13 +296,33 @@ def main():
             openclaw_config = OpenClawConfigManager()
             connection_validator = ConnectionValidator()
 
+            # 验证模型 ID
+            try:
+                validate_model_id(args.model)
+            except ValueError as e:
+                logger.error(f"模型 ID 无效: {e}")
+                return 1
+
             # 获取API Key
             api_key = args.api_key or get_api_key_interactive(
                 f"OpenClaw ({args.model})"
             )
 
+            # 验证 API Key
+            try:
+                validate_api_key(api_key)
+            except ValueError as e:
+                logger.error(f"API Key 无效: {e}")
+                return 1
+
             # 测试连接
             if not args.no_test and args.base_url:
+                # 验证 Base URL
+                try:
+                    validate_url(args.base_url)
+                except ValueError as e:
+                    logger.error(f"Base URL 无效: {e}")
+                    return 1
                 print("\n正在测试连接...")
                 provider = args.model.split("/")[0]
                 result = connection_validator.test_connection(
@@ -429,7 +448,16 @@ def main():
 
     except KeyboardInterrupt:
         print("\n\n操作已取消")
-        return 1
-    except Exception as e:
-        logger.error(f"执行失败: {e}", exc_info=True)
+        return 130
+    except ConfigError as e:
+        logger.error(f"配置错误: {e}")
         return 2
+    except CoreConnectionError as e:
+        logger.error(f"连接错误: {e}")
+        return 3
+    except ValueError as e:
+        logger.error(f"参数错误: {e}")
+        return 4
+    except Exception as e:
+        logger.error(f"未知错误: {e}", exc_info=True)
+        return 1
