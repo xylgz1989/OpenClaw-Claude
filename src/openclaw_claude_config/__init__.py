@@ -131,9 +131,6 @@ def create_parser():
         "--name", required=True, help="模型名称"
     )
     openclaw_custom_parser.add_argument(
-        "--name", required=True, help="模型名称"
-    )
-    openclaw_custom_parser.add_argument(
         "--provider", required=True, help="Provider名称"
     )
     openclaw_custom_parser.add_argument(
@@ -382,12 +379,36 @@ def main():
             print(f"\n可用模型列表 ({args.region}):")
             print("-" * 60)
 
-            for category, providers in models.items():
+            if args.region == "all":
+                # 当 region 是 all 时，models 的结构是 {'china': {...}, 'international': {...}}
+                for category, providers in models.items():
+                    category_name = (
+                        "国内模型" if category == "china" else "国际模型"
+                    )
+                    print(f"\n{category_name}:")
+                    for provider_id, provider_info in providers.items():
+                        print(f"\n  [{provider_info['name']}]")
+                        for model in provider_info.get("models", []):
+                            print(f"    {model.id} - {model.name}")
+                            print(
+                                f"      上下文: "
+                                f"{model.context_length // 1000}K tokens"
+                            )
+                            if model.api_pricing:
+                                price_input = model.api_pricing.get(
+                                    "input_per_1m", "N/A"
+                                )
+                                print(
+                                    f"      API价格: 输入 {price_input}"
+                                    f"元/百万tokens"
+                                )
+            else:
+                # 当 region 不是 all 时，models 的结构是 {'qwen': {...}, 'glm': {...}, ...}
                 category_name = (
-                    "国内模型" if category == "china" else "国际模型"
+                    "国内模型" if args.region == "china" else "国际模型"
                 )
                 print(f"\n{category_name}:")
-                for provider_info in providers.values():
+                for provider_id, provider_info in models.items():
                     print(f"\n  [{provider_info['name']}]")
                     for model in provider_info.get("models", []):
                         print(f"    {model.id} - {model.name}")
