@@ -41,7 +41,7 @@ class ClaudeCodeConfigManager(BaseConfigManager):
         "aliyun": {
             "name": "阿里云百炼",
             "description": "通义千问模型",
-            "base_url": "https://dashscope.aliyuncs.com/apps/anthropic",
+            "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
             "models": {
                 "opus": "qwen3.5-plus",
                 "sonnet": "qwen3.5-plus",

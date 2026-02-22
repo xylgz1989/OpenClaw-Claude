@@ -71,7 +71,7 @@ class ModelRegistry:
                                 "201种语言",
                             ],
                             api_endpoint=(
-                                "https://dashscope.aliyuncs.com/api/v1"
+                                "https://dashscope.aliyuncs.com/compatible-mode/v1"
                             ),
                             docs_url="https://help.aliyun.com/dashscope",
                             release_date="2026-02-16",
