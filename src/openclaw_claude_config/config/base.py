@@ -16,11 +16,21 @@ from ..utils.security import set_secure_permissions
 class BaseConfigManager(ABC):
     """配置管理器基类"""
 
+    # 默认配置版本
+    DEFAULT_SCHEMA_VERSION = "2.0"
+
     def __init__(self, config_path: Path):
         self.config_path = config_path
         self.logger = get_logger(self.__class__.__name__)
         self.config: Dict[str, Any] = {}
         self.load_config()
+
+        # 确保新配置段存在（向后兼容）
+        self.ensure_section("providers")
+        self.ensure_section("fallback")
+        self.ensure_section("quota_monitoring")
+        self.ensure_section("notifications")
+        self.ensure_subsection("cli", "log_level")
 
     @abstractmethod
     def create_default_config(self) -> Dict[str, Any]:
@@ -133,3 +143,34 @@ class BaseConfigManager(ABC):
     def set_version(self, version: str):
         """设置配置版本"""
         self.set("_schema.version", version)
+
+    def get_providers_config(self) -> Dict[str, Any]:
+        """获取提供商配置"""
+        return self.get("providers", {})
+
+    def get_fallback_config(self) -> Dict[str, Any]:
+        """获取智能切换配置"""
+        return self.get("fallback", {})
+
+    def get_quota_monitoring_config(self) -> Dict[str, Any]:
+        """获取配额监控配置"""
+        return self.get("quota_monitoring", {})
+
+    def get_notifications_config(self) -> Dict[str, Any]:
+        """获取告警通知配置"""
+        return self.get("notifications", {})
+
+    def get_cli_config(self) -> Dict[str, Any]:
+        """获取 CLI 配置"""
+        return self.get("cli", {})
+
+    def ensure_section(self, section: str) -> None:
+        """确保配置段存在"""
+        if section not in self.config:
+            self.config[section] = {}
+
+    def ensure_subsection(self, section: str, subsection: str) -> None:
+        """确保配置子段存在"""
+        self.ensure_section(section)
+        if subsection not in self.config[section]:
+            self.config[section][subsection] = {}
