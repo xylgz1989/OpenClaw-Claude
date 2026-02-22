@@ -6,8 +6,9 @@ import argparse
 from typing import Optional
 
 from ..config.provider_manager import ProviderManager
+from ..core.fallback_engine import FallbackEngine, FallbackReason
+from ..core.quota_monitor import QuotaMonitor
 from ..utils.logger import setup_logger, get_logger
-from ..utils.security import get_api_key_interactive
 
 
 def create_parser(subparsers):
@@ -37,6 +38,7 @@ def handle_fallback_status(args) -> int:
     """Handle fallback status command"""
     logger = get_logger(__name__)
     provider_manager = ProviderManager()
+    fallback_engine = FallbackEngine(provider_manager)
 
     fallback_config = provider_manager.get_fallback_config()
 
@@ -50,7 +52,8 @@ def handle_fallback_status(args) -> int:
         print(f"\n  可用提供商: {len(available_providers)}")
         for provider_id in available_providers:
             provider = provider_manager.get_provider(provider_id)
-            print(f"    - {provider_id}: {provider.get('name', 'N/A')}")
+            if provider:
+                print(f"    - {provider_id}: {provider.get('name', 'N/A')}")
 
     return 0
 
@@ -59,6 +62,7 @@ def handle_fallback_trigger(args) -> int:
     """Handle fallback trigger command"""
     logger = get_logger(__name__)
     provider_manager = ProviderManager()
+    fallback_engine = FallbackEngine(provider_manager)
 
     print(f"\n手动触发切换:")
     print(f"  从: {args.from_provider}")
@@ -73,23 +77,41 @@ def handle_fallback_trigger(args) -> int:
     if args.strategy:
         print(f"  策略: {args.strategy}")
 
-    # TODO: 实现实际的切换逻辑
-    # 这需要切换引擎的实现
+    # 执行切换
+    result = fallback_engine.trigger_fallback(
+        from_provider_id=args.from_provider,
+        reason=args.reason,
+        strategy=args.strategy,
+        to_provider_id=args.to_provider
+    )
 
-    print("\n⚠️  注意: 切换功能需要进一步的实现")
-    print("请参考开发计划中的 Phase 1 任务。")
-
-    return 0
+    if result.get('success'):
+        print(f"\n✅ 切换成功")
+        print(f"  从: {result.get('from_provider_id')} -> {result.get('to_provider_id')}")
+        print(f"  原因: {result.get('reason')}")
+        return 0
+    else:
+        print(f"\n❌ 切换失败: {result.get('error', 'Unknown error')}")
+        return 1
 
 
 def handle_fallback_history(args) -> int:
     """Handle fallback history command"""
     logger = get_logger(__name__)
-    provider_manager = ProviderManager()
 
     print(f"\n切换历史（最近 {args.last} 条）:")
-    print("  ⚠️  注意: 切换历史需要数据库支持")
-    print("请参考开发计划中的 Phase 1 任务。")
+    history = []
+    # TODO: 实现从数据库获取历史
+    if history:
+        for event in history[:args.last]:
+            print(f"\n  [{event['timestamp']}]")
+            print(f"    从: {event['from_provider_id']} -> {event['to_provider_id']}")
+            print(f"    原因: {event['reason']}")
+            print(f"    策略: {event.get('strategy', 'N/A')}")
+            print(f"    成功: {'是' if event.get('success') else '否'}")
+    else:
+        print("  ⚠️  切换历史需要数据库支持")
+        print("请参考开发计划中的 Phase 1 任务。")
 
     return 0
 

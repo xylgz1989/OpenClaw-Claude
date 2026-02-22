@@ -5,6 +5,7 @@ Quota commands for OpenClaw Claude Config CLI
 import argparse
 
 from ..config.provider_manager import ProviderManager
+from ..core.quota_monitor import QuotaMonitor
 from ..utils.logger import get_logger
 
 
@@ -30,6 +31,7 @@ def handle_quota_status(args) -> int:
     """Handle quota status command"""
     logger = get_logger(__name__)
     provider_manager = ProviderManager()
+    quota_monitor = QuotaMonitor(provider_manager)
 
     quota_config = provider_manager.get_quota_monitoring_config()
 
@@ -54,6 +56,31 @@ def handle_quota_status(args) -> int:
                 print(f"      配额限制: {provider.get('quota_limit')}")
                 print(f"      配额类型: {provider.get('quota_type', 'N/A')}")
 
+            # 查询配额
+            quota_info = quota_monitor.query_quota(provider_id)
+            if quota_info:
+                used = quota_info.get('used', 0)
+                limit = quota_info.get('limit')
+                if limit:
+                    usage_percentage = (used / limit * 100) if limit else 0
+                    remaining = limit - used
+
+                    print(f"      已用: {used}")
+                    print(f"      限制: {limit}")
+                    print(f"      剩余: {remaining}")
+                    print(f"      使用率: {usage_percentage:.1f}%")
+
+                    # 检查告警
+                    alerts = quota_monitor.check_quota_alerts(provider_id, quota_info)
+                    if alerts:
+                        print(f"      告警: {len(alerts)} 个")
+                        for alert in alerts:
+                            print(f"        - {alert['level']}: {alert['message']}")
+                else:
+                    print(f"      状态: 无配额信息")
+            else:
+                print(f"      状态: 配额查询失败")
+
     elif args.provider:
         provider = provider_manager.get_provider(args.provider)
         if provider:
@@ -64,7 +91,31 @@ def handle_quota_status(args) -> int:
             if provider.get('quota_limit'):
                 print(f"  配额限制: {provider.get('quota_limit')}")
                 print(f"  配额类型: {provider.get('quota_type', 'N/A')}")
-                print(f"  5小时时限额: {provider.get('rate_limit_5h', False)}")
+
+            # 查询配额
+            quota_info = quota_monitor.query_quota(provider_id)
+            if quota_info:
+                used = quota_info.get('used', 0)
+                limit = quota_info.get('limit')
+                if limit:
+                    usage_percentage = (used / limit * 100) if limit else 0
+                    remaining = limit - used
+
+                    print(f"  已用: {used}")
+                    print(f"  限制: {limit}")
+                    print(f"  剩余: {remaining}")
+                    print(f"  使用率: {usage_percentage:.1f}%")
+
+                    # 检查告警
+                    alerts = quota_monitor.check_quota_alerts(provider_id, quota_info)
+                    if alerts:
+                        print(f"  告警: {len(alerts)} 个")
+                        for alert in alerts:
+                            print(f"    - {alert['level']}: {alert['message']}")
+                else:
+                    print(f"  状态: 无配额信息")
+            else:
+                print(f"  状态: 配额查询失败")
         else:
             print(f"\n提供商 {args.provider} 不存在")
             return 1
@@ -83,14 +134,44 @@ def handle_quota_test(args) -> int:
     """Handle quota test command"""
     logger = get_logger(__name__)
     provider_manager = ProviderManager()
+    quota_monitor = QuotaMonitor(provider_manager)
 
     print(f"\n测试配额监控: {args.provider}")
 
-    # TODO: 实现实际的配额查询和测试逻辑
-    # 这需要配额监控器的实现
+    # 查询配额
+    quota_info = quota_monitor.query_quota(args.provider)
+    if quota_info:
+        used = quota_info.get('used', 0)
+        limit = quota_info.get('limit')
+        if limit:
+            usage_percentage = (used / limit * 100) if limit else 0
 
-    print("\n⚠️  注意: 配额监控功能需要进一步的实现")
-    print("请参考开发计划中的 Phase 1 任务。")
+            print(f"\n  已用: {used}")
+            print(f"  限制: {limit}")
+            print(f"  剩余: {limit - used}")
+            print(f"  使用率: {usage_percentage:.1f}%")
+
+            # 检查告警
+            alerts = quota_monitor.check_quota_alerts(args.provider, quota_info)
+            if alerts:
+                print(f"\n  告警: {len(alerts)} 个")
+                for alert in alerts:
+                    print(f"    - {alert['level']}: {alert['message']}")
+            else:
+                print("\n  ⚠️  无告警")
+
+        # 测试 API 连接
+        provider = provider_manager.get_provider(args.provider)
+        if provider:
+            print(f"\n  测试 API 连接...")
+            print(f"  API 端点: {provider.get('api_endpoint')}")
+            # TODO: 实现实际的连接测试
+            print(f"\n  ⚠️  连接测试需要进一步实现")
+
+            return 0
+        else:
+            print(f"\n❌ 提供商 {args.provider} 不存在")
+            return 1
 
     return 0
 
