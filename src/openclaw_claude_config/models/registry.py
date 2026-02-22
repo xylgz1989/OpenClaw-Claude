@@ -104,7 +104,7 @@ class ModelRegistry:
                             context_length=200000,
                             features=["开源SOTA", "编程能力顶尖", "Agent能力"],
                             api_endpoint=(
-                                "https://api.z.ai/api/coding/paas/v4"
+                                "https://open.bigmodel.cn/api/anthropic"
                             ),
                             docs_url="https://www.bigmodel.cn",
                             release_date="2026-02-12",
