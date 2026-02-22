@@ -1,1 +1,3 @@
-# Tests module
+"""
+Tests for __init__.py
+"""

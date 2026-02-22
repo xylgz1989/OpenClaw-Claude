@@ -286,7 +286,7 @@ class ProviderManager(BaseConfigManager):
             provider_config = {
                 "name": provider_info["name"],
                 "api_endpoint": provider_info["api_endpoint"],
-                "api_key": f"${preset_id.upper()}_API_KEY}",
+                "api_key": f"${preset_id.upper()}_API_KEY",
                 "enabled": True,
                 "priority": 0,
                 "rate_limit_5h": preset_id in ["zhipu", "aliyun", "kimi", "minimax"]
