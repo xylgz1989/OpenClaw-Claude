@@ -5,6 +5,7 @@ Test framework for OpenClaw Claude Config
 import pytest
 import tempfile
 import os
+import json
 from pathlib import Path
 
 # 添加 src 到路径
@@ -17,18 +18,18 @@ from openclaw_claude_config.core.quota_monitor import QuotaMonitor
 from openclaw_claude_config.core.alert_engine import AlertEngine, Alert, AlertLevel, AlertStatus
 
 
-@pytest.fixture
-def temp_config_dir():
-    """Create temporary configuration directory"""
+@pytest.fixture(scope="session")
+def test_config_dir():
+    """Create a temporary configuration directory"""
     with tempfile.TemporaryDirectory() as tmpdir:
-        config_path = Path(tmpdir) / "settings.json"
-        yield tmpdir, config_path
+        yield tmpdir
 
 
 @pytest.fixture
-def provider_manager():
-    """Create provider manager instance"""
-    return ProviderManager()
+def provider_manager(test_config_dir):
+    """Create provider manager instance with test config"""
+    config_path = Path(test_config_dir) / "settings.json"
+    return ProviderManager(config_path)
 
 
 @pytest.fixture

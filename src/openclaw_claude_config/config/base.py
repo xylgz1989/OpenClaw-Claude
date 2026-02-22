@@ -75,7 +75,7 @@ class BaseConfigManager(ABC):
                 self._create_backup()
 
             with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(self.config, f, indent=2, ensure_ascii=False)
+                json.dump(self.config, f, indent=2, ensure_ascii=True)
 
             # 设置安全权限
             set_secure_permissions(self.config_path)
