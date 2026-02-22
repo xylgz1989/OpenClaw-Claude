@@ -7,10 +7,14 @@ import tempfile
 import os
 from pathlib import Path
 
-from ..config.provider_manager import ProviderManager
-from ..core.fallback_engine import FallbackEngine
-from ..core.quota_monitor import QuotaMonitor
-from ..core.alert_engine import AlertEngine, Alert, AlertLevel, AlertStatus
+# 添加 src 到路径
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+
+from openclaw_claude_config.config.provider_manager import ProviderManager
+from openclaw_claude_config.core.fallback_engine import FallbackEngine
+from openclaw_claude_config.core.quota_monitor import QuotaMonitor
+from openclaw_claude_config.core.alert_engine import AlertEngine, Alert, AlertLevel, AlertStatus
 
 
 @pytest.fixture

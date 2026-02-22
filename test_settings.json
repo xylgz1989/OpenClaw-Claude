@@ -1,0 +1,40 @@
+{
+  "hasCompletedOnboarding": true,
+  "version": 2.0,
+  "security": {
+    "auth": {
+      "selectedType": "test",
+      "apiKey": "test_key",
+      "baseUrl": "https://test.com/api"
+    }
+  },
+  "model": "test-model",
+  "providers": {},
+  "fallback": {
+    "enabled": false,
+    "strategy": "balance"
+  },
+  "quota_monitoring": {
+    "enabled": false,
+    "check_interval_seconds": 300,
+    "alert_thresholds": {
+      "warning": 80,
+      "critical": 90,
+      "exhausted": 95
+    }
+  },
+  "notifications": {
+    "enabled": false,
+    "channels": {
+      "email": {
+        "enabled": false
+      },
+      "webhook": {
+        "enabled": false
+      },
+      "feishu": {
+        "enabled": false
+      }
+    }
+  }
+}
