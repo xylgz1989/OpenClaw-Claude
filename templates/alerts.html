@@ -1,0 +1,90 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6">
+    <h1 class="text-2xl font-bold mb-6">{{ title }}</h1>
+
+    <!-- Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-sm text-gray-600">总计</p>
+            <p class="text-2xl font-bold text-blue-600">{{ stats.total or 0 }}</p>
+        </div>
+        <div class="bg-yellow-50 rounded-lg p-4">
+            <p class="text-sm text-gray-600">警告</p>
+            <p class="text-2xl font-bold text-yellow-600">{{ stats.by_level.warning or 0 }}</p>
+        </div>
+        <div class="bg-red-50 rounded-lg p-4">
+            <p class="text-sm text-gray-600">严重</p>
+            <p class="text-2xl font-bold text-red-600">{{ stats.by_level.critical or 0 }}</p>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4">
+            <p class="text-sm text-gray-600">信息</p>
+            <p class="text-2xl font-bold text-green-600">{{ stats.by_level.info or 0 }}</p>
+        </div>
+    </div>
+
+    <!-- Alert List -->
+    {% if alerts %}
+        <div class="space-y-4">
+            {% for alert in alerts %}
+                <div class="card bg-gray-50 rounded-lg p-4 border-l-4
+                    {% if alert.level == 'critical' %}border-red-500{% endif %}
+                    {% if alert.level == 'warning' %}border-yellow-500{% endif %}
+                    {% if alert.level == 'info' %}border-green-500{% endif %}
+                ">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 class="font-semibold text-lg">{{ alert.title }}</h3>
+                            <p class="text-sm text-gray-600">
+                                <strong>提供商：</strong>{{ alert.provider_id }}
+                                <strong class="ml-4">时间：</strong>{{ alert.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                            </p>
+                        </div>
+                        <span class="px-3 py-1 rounded text-sm text-white
+                            {% if alert.level == 'critical' %}bg-red-500{% endif %}
+                            {% if alert.level == 'warning' %}bg-yellow-500{% endif %}
+                            {% if alert.level == 'info' %}bg-green-500{% endif %}
+                        ">
+                            {% if alert.level == 'critical' %}严重{% endif %}
+                            {% if alert.level == 'warning' %}警告{% endif %}
+                            {% if alert.level == 'info' %}信息{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="mb-2">
+                        <p class="text-gray-900">{{ alert.message }}</p>
+                    </div>
+
+                    {% if alert.quota_used_percentage %}
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-600">
+                                <strong>配额使用率：</strong>{{ alert.quota_used_percentage | round(1) }}%
+                                <strong class="ml-4">剩余：</strong>{{ alert.quota_remaining }}
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-2 flex items-center space-x-2">
+                        <span class="text-xs text-gray-500">状态：</span>
+                        {% if alert.status == 'sent' %}
+                            <span class="badge-success text-white px-2 py-1 rounded text-xs">已发送</span>
+                        {% elif alert.status == 'pending' %}
+                            <span class="badge-warning text-white px-2 py-1 rounded text-xs">待发送</span>
+                        {% elif alert.status == 'failed' %}
+                            <span class="badge-danger text-white px-2 py-1 rounded text-xs">发送失败</span>
+                        {% elif alert.status == 'acknowledged' %}
+                            <span class="badge-info text-white px-2 py-1 rounded text-xs">已确认</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <p class="text-gray-500 text-lg">暂无告警记录</p>
+            <p class="text-gray-400 text-sm mt-2">系统运行正常</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

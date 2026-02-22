@@ -1,0 +1,69 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6">
+    <h1 class="text-2xl font-bold mb-6">{{ title }}</h1>
+
+    {% if quota_data %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for provider_id, quota_info in quota_data.items() %}
+                <div class="card bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg">{{ provider_id }}</h3>
+                        <span class="badge-info text-white px-2 py-1 rounded text-sm">配额</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">使用率</p>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                                            {{ (quota_info.used / quota_info.limit * 100) | round(1) }}%
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                                    <div style="width:{{ quota_info.used / quota_info.limit * 100 }}%"
+                                         class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-white rounded p-2">
+                                <p class="text-xs text-gray-600">已用</p>
+                                <p class="text-lg font-semibold text-blue-600">{{ quota_info.used }}</p>
+                            </div>
+                            <div class="bg-white rounded p-2">
+                                <p class="text-xs text-gray-600">限制</p>
+                                <p class="text-lg font-semibold text-gray-900">{{ quota_info.limit }}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-600">剩余</p>
+                            <p class="text-2xl font-bold text-green-600">{{ quota_info.limit - quota_info.used }}</p>
+                        </div>
+
+                        {% if quota_info.used / quota_info.limit >= 0.8 %}
+                            <div class="bg-yellow-100 border-l-4 border-yellow-500 p-2">
+                                <p class="text-xs text-yellow-700">
+                                    ⚠️ 配额即将耗尽，请注意
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <p class="text-gray-500 text-lg">暂无配额数据</p>
+            <p class="text-gray-400 text-sm mt-2">请检查提供商配置和 API 连接</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

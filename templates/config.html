@@ -1,0 +1,116 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6">
+    <h1 class="text-2xl font-bold mb-6">{{ title }}</h1>
+
+    <div class="space-y-6">
+        <!-- Fallback Config -->
+        <div>
+            <h2 class="text-xl font-semibold mb-4">智能切换配置</h2>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">启用状态</p>
+                        <p class="text-lg font-semibold">
+                            {% if fallback_config.enabled %}
+                                <span class="text-green-600">✅ 已启用</span>
+                            {% else %}
+                                <span class="text-red-600">❌ 已禁用</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">切换策略</p>
+                        <p class="text-lg font-semibold text-blue-600">{{ fallback_config.strategy or 'balance' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quota Monitoring Config -->
+        <div>
+            <h2 class="text-xl font-semibold mb-4">配额监控配置</h2>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">启用状态</p>
+                        <p class="text-lg font-semibold">
+                            {% if quota_config.enabled %}
+                                <span class="text-green-600">✅ 已启用</span>
+                            {% else %}
+                                <span class="text-red-600">❌ 已禁用</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">检查间隔</p>
+                        <p class="text-lg font-semibold text-blue-600">{{ quota_config.check_interval_seconds or 300 }} 秒</p>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <p class="text-sm text-gray-600 mb-2">告警阈值</p>
+                    <div class="flex space-x-4">
+                        <div class="bg-yellow-100 px-3 py-1 rounded">
+                            <span class="text-sm">警告：{{ quota_config.alert_thresholds.warning or 80 }}%</span>
+                        </div>
+                        <div class="bg-orange-100 px-3 py-1 rounded">
+                            <span class="text-sm">严重：{{ quota_config.alert_thresholds.critical or 90 }}%</span>
+                        </div>
+                        <div class="bg-red-100 px-3 py-1 rounded">
+                            <span class="text-sm">耗尽：{{ quota_config.alert_thresholds.exhausted or 95 }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Config -->
+        <div>
+            <h2 class="text-xl font-semibold mb-4">通知配置</h2>
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Email 通知</p>
+                        <p class="text-lg font-semibold">
+                            {% if notification_config.channels.email.enabled %}
+                                <span class="text-green-600">✅ 已启用</span>
+                            {% else %}
+                                <span class="text-gray-600">❌ 未启用</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Webhook 通知</p>
+                        <p class="text-lg font-semibold">
+                            {% if notification_config.channels.webhook.enabled %}
+                                <span class="text-green-600">✅ 已启用</span>
+                            {% else %}
+                                <span class="text-gray-600">❌ 未启用</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Feishu 通知</p>
+                        <p class="text-lg font-semibold">
+                            {% if notification_config.channels.feishu.enabled %}
+                                <span class="text-green-600">✅ 已启用</span>
+                            {% else %}
+                                <span class="text-gray-600">❌ 未启用</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
+            <p class="text-sm text-blue-700">
+                ℹ️ 配置修改请使用 CLI 命令或直接编辑配置文件 <code>~/.claude/settings.json</code>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
