@@ -3,7 +3,8 @@ Notification Manager - Send notifications via multiple channels
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional
+from typing import Dict, Optional, List
+from datetime import datetime
 
 from ..config.base import BaseConfigManager
 from ..config.provider_manager import ProviderManager
@@ -38,22 +39,29 @@ class EmailNotifier(NotificationChannel):
         self.password = None
         self.to_email = None
         self.enabled = False
+        self._load_email_config()
 
     def _load_email_config(self):
         """Load email configuration"""
-        notifications_config = self.config.get_notifications_config()
-        email_config = notifications_config.get("channels", {}).get("email", {})
+        try:
+            notifications_config = self.config.get_notifications_config()
+            email_config = notifications_config.get("channels", {}).get("email", {})
 
-        self.enabled = email_config.get("enabled", False)
-        self.smtp_host = self._expand_env_var(email_config.get("smtp_host"))
-        self.smtp_port = self._expand_env_var(email_config.get("smtp_port", "587"))
-        self.username = self._expand_env_var(email_config.get("username"))
-        self.password = self._expand_env_var(email_config.get("password"))
-        self.to_email = self._expand_env_var(email_config.get("to"))
+            self.enabled = email_config.get("enabled", False)
+            self.smtp_host = self._expand_env_var(email_config.get("smtp_host"))
+            self.smtp_port = self._expand_env_var(email_config.get("smtp_port", "587"))
+            self.username = self._expand_env_var(email_config.get("username"))
+            self.password = self._expand_env_var(email_config.get("password"))
+            self.to_email = self._expand_env_var(email_config.get("to"))
+        except Exception as e:
+            self.logger.warning(f"Failed to load email config: {e}")
+            self.enabled = False
 
     def _expand_env_var(self, value: Optional[str]) -> Optional[str]:
         """Expand environment variable"""
-        if not value or value.startswith('${') and value.endswith('}'):
+        if not value:
+            return None
+        if value.startswith('${') and value.endswith('}'):
             import os
             var_name = value[1:-1]
             return os.environ.get(var_name)
@@ -84,7 +92,7 @@ class EmailNotifier(NotificationChannel):
 
 Provider: {alert.provider_id}
 Level: {alert.level}
-Time: {alert.created_at}
+Time: {alert.created_at.strftime('%Y-%m-%d %H:%M:%S')}
 Quota Used: {alert.quota_used_percentage:.1f}% ({alert.quota_remaining} remaining)
 """
 
@@ -112,7 +120,9 @@ Quota Used: {alert.quota_used_percentage:.1f}% ({alert.quota_remaining} remainin
             'level': 'info',
             'title': 'Test Notification',
             'message': message,
-            'created_at': alert.created_at
+            'created_at': datetime.utcnow(),
+            'quota_used_percentage': 0,
+            'quota_remaining': 0
         }
         return self.send(test_alert)
 
@@ -125,18 +135,25 @@ class WebhookNotifier(NotificationChannel):
         self.logger = get_logger(self.__class__.__name__)
         self.webhook_url = None
         self.enabled = False
+        self._load_webhook_config()
 
     def _load_webhook_config(self):
         """Load webhook configuration"""
-        notifications_config = self.config.get_notifications_config()
-        webhook_config = notifications_config.get("channels", {}).get("webhook", {})
+        try:
+            notifications_config = self.config.get_notifications_config()
+            webhook_config = notifications_config.get("channels", {}).get("webhook", {})
 
-        self.enabled = webhook_config.get("enabled", False)
-        self.webhook_url = self._expand_env_var(webhook_config.get("url"))
+            self.enabled = webhook_config.get("enabled", False)
+            self.webhook_url = self._expand_env_var(webhook_config.get("url"))
+        except Exception as e:
+            self.logger.warning(f"Failed to load webhook config: {e}")
+            self.enabled = False
 
     def _expand_env_var(self, value: Optional[str]) -> Optional[str]:
         """Expand environment variable"""
-        if not value or value.startswith('${') and value.endswith('}'):
+        if not value:
+            return None
+        if value.startswith('${') and value.endswith('}'):
             import os
             var_name = value[1:-1]
             return os.environ.get(var_name)
@@ -190,7 +207,9 @@ class WebhookNotifier(NotificationChannel):
             'level': 'info',
             'title': 'Test Notification',
             'message': message,
-            'created_at': datetime.utcnow()
+            'created_at': datetime.utcnow(),
+            'quota_used_percentage': 0,
+            'quota_remaining': 0
         }
         return self.send(test_alert)
 
@@ -203,17 +222,24 @@ class FeishuNotifier(NotificationChannel):
         self.logger = get_logger(self.__class__.__name__)
         self.webhook_url = None
         self.enabled = False
+        self._load_feishu_config()
 
     def _load_feishu_config(self):
         """Load Feishu webhook URL"""
-        notifications_config = self.config.get_notifications_config()
-        feishu_config = notifications_config.get("channels", {}).get("feishu", {})
-        self.enabled = feishu_config.get("enabled", False)
-        self.webhook_url = self._expand_env_var(feishu_config.get("webhook_url"))
+        try:
+            notifications_config = self.config.get_notifications_config()
+            feishu_config = notifications_config.get("channels", {}).get("feishu", {})
+            self.enabled = feishu_config.get("enabled", False)
+            self.webhook_url = self._expand_env_var(feishu_config.get("webhook_url"))
+        except Exception as e:
+            self.logger.warning(f"Failed to load feishu config: {e}")
+            self.enabled = False
 
     def _expand_env_var(self, value: Optional[str]) -> Optional[str]:
         """Expand environment variable"""
-        if not value or value.startswith('${') and value.endswith('}'):
+        if not value:
+            return None
+        if value.startswith('${') and value.endswith('}'):
             import os
             var_name = value[1:-1]
             return os.environ.get(var_name)
@@ -263,7 +289,9 @@ class FeishuNotifier(NotificationChannel):
             'level': 'info',
             'title': 'Test Notification',
             'message': message,
-            'created_at': datetime.utcnow()
+            'created_at': datetime.utcnow(),
+            'quota_used_percentage': 0,
+            'quota_remaining': 0
         }
         return self.send(test_alert)
 
@@ -320,3 +348,27 @@ class NotificationManager:
         # TODO: Implement database cleanup
         self.logger.info(f"Cleaning up alerts older than {days_to_keep} days")
         return 0
+
+
+def get_notification_manager(config_manager: Optional[ProviderManager] = None) -> NotificationManager:
+    """Get notification manager instance"""
+    if config_manager is None:
+        from ..config.provider_manager import ProviderManager
+        config_manager = ProviderManager()
+
+    manager = NotificationManager(config_manager)
+
+    # Register notification channels
+    email_notifier = EmailNotifier(config_manager)
+    if email_notifier.enabled:
+        manager.register_channel("email", email_notifier)
+
+    webhook_notifier = WebhookNotifier(config_manager)
+    if webhook_notifier.enabled:
+        manager.register_channel("webhook", webhook_notifier)
+
+    feishu_notifier = FeishuNotifier(config_manager)
+    if feishu_notifier.enabled:
+        manager.register_channel("feishu", feishu_notifier)
+
+    return manager
